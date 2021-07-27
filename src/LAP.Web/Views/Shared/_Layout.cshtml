@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - LAP</title>
+    <link href="/js/element-2.15.3/index.min.css?v=1.0.0" rel="stylesheet" />
+    <link href="/css/font-awesome.min.css?v=1.0.0" rel="stylesheet" />
+    <link href="/css/layout.css?v=1.0.1" rel="stylesheet" />
+    <link href="/css/layui-icon.css?v=1.0.0" rel="stylesheet" />
+    @await RenderSectionAsync("Css", false)
+</head>
+<body>
+    @RenderBody()
+    <script src="/js/element-2.15.3/vue.min.js?v=1.0.0"></script>
+    <script src="/js/element-2.15.3/index.min.js?v=1.0.0"></script>
+    <script src="/js/jquery-3.0.0.min.js?v=1.0.0"></script>
+    <script src="/js/layout/common.js?v=1.0.0"></script>
+    <script src="/js/layout/gobal.js?v=1.0.0"></script>
+    <script src="/js/layout/parent-api.js?v=1.0.0"></script>
+    <script src="/js/layout/sal-expands.js?v=1.0.0"></script>
+    <script src="/js/layout/sal-chain.js?v=1.0.0"></script>
+    <script src="/js/layout/layout.js?v=1.0.0"></script>
+    <script src="/js/plugins/layer/layer.js?v=1.0.0"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
