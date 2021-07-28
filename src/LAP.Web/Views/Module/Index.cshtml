@@ -1,5 +1,209 @@
 ﻿@{
     ViewData["Title"] = "模块管理";
 }
+<div id="moduleApp">
+    <template>
+        <el-container>
+            <el-header style="margin-top:25px;">
+                <el-form ref="form" :inline="true" :model="searchForm">
+                    <el-row>
+                        <el-col :span="6">
+                            <el-form-item label="搜索：">
+                                <el-input style="width:300px;" size="medium" v-model="searchForm.searchValue" placeholder="请输入关键字"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-search">查询</el-button>
+                            <el-button type="success" size="medium" v-on:click="add" icon="el-icon-plus">添加</el-button>
+                            <el-button type="danger" size="medium" v-on:click="dels" icon="el-icon-delete">删除</el-button>
+                            <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-refresh">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-header>
+            <el-main>
+                <!--列表-->
+                <template>
+                    <el-table :data="tableData" border size="medium" style="width:100%" v-on:selection-change="selectionChange">
+                        <el-table-column type="selection" width="40">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="name" label="模块名称">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="code" label="模块代码">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="CreateTime" label="创建时间" width="200">
+                        </el-table-column>
+                        <el-table-column header-align="center" label="操作" width="200">
+                            <template slot-scope="scope">
+                                <el-button v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-row :gutter="20">
+                        <el-col :span="8" :offset="8">
+                            <el-pagination v-on:size-change="handleSizeChange"
+                                           v-on:current-change="handleCurrentChange"
+                                           :page-sizes="pageSizes"
+                                           :page-size="pageSize"
+                                           :current-page="1"
+                                           layout="total, sizes, prev, pager, next, jumper"
+                                           :total="total">
+                            </el-pagination>
+                        </el-col>
+                    </el-row>
+                </template>
+            </el-main>
+        </el-container>
+    </template>
+    <!--表单-->
+    <template>
+        <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="40%">
+            <el-form :model="moduleForm" ref="moduleForm" label-position="right" label-width="100px">
+                <el-form-item prop="name" label="模块名称:" label-width="130px">
+                    <el-input v-model="moduleForm.name" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="warning" v-on:click="resetForm()">重 置</el-button>
+                <el-button type="primary" v-on:click="submitForm('moduleForm')">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
+</div>
 
-<h2>Index</h2>
+@section Scripts {
+    <script>
+        new Vue({
+            el: "#moduleApp",
+            data: {
+                searchForm: {
+                    searchValue: null
+                },
+                dialogFormVisible: false,
+                moduleForm: {
+                    id: null,
+                    name: null,
+                    code: null
+                },
+                ids: null,
+                tableData: null,
+                // 分页
+                pageSizes: [20, 30, 50, 100],
+                pageSize: 20,
+                pageIndex: 1,
+                total: 0
+            },
+            methods: {
+                // 查询
+                search: function () {
+                    this.pageReset();
+                    this.getTableData();
+                },
+                // 添加
+                add: function () {
+                    this.resetForm();
+                    this.dialogFormVisible = true;
+                },
+                // 批量删除
+                dels: function () {
+                    if (this.ids.length <= 0) {
+                        api.showMsg("请选择数据...", "warning");
+                        return false;
+                    }
+                    common.deletes(this, '/InterfaceGroup/Deletes', { ids: this.ids });
+                },
+                // 重置
+                reset: function () {
+                    this.searchForm.searchValue = null;
+                    this.pageReset();
+                    this.getTableData();
+                },
+                // 编辑
+                edit: function (row) {
+                    var self = this;
+                    $.get("/InterfaceGroup/GetInterfaceGroup?id=" + row.id, function (res) {
+                        self.moduleForm = res;
+                        self.dialogFormVisible = true;
+                    });
+                },
+                // 提交
+                submitForm: function (formName) {
+                    var self = this;
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            $.post("/Module/Submit", self.moduleForm, function (res) {
+                                if (res.code === 1) {
+                                    self.resetForm();// 重置表单
+                                    api.showMsg("保存成功...", "success");
+                                    self.dialogFormVisible = false;// 关闭窗口
+                                    self.getTableData();// 重新查询
+                                } else if (res.code === -1) {
+                                    api.showMsg("模块名称:" + self.moduleForm.Name + "重复!", "error");
+                                    return false;
+                                }
+                                else {
+                                    api.showMsg("保存失败...", "error");
+                                    return false;
+                                }
+                            });
+                        } else {
+                            api.showMsg("error submit...", "error");
+                            return false;
+                        }
+                    });
+                },
+                //获取列表
+                getTableData: function () {
+                    var self = this;
+                    var options = {
+                        pageIndex: self.pageIndex,
+                        pageSize: self.pageSize,
+                        searchKey: self.searchForm.searchValue
+                    };
+                    $.get("/Module/Load", options, function (res) {
+                        self.tableData = res.data;
+                        self.pageIndex = res.pageIndex;
+                        self.pageSize = res.pageSize;
+                        self.total = res.total;
+                    });
+                },
+                // 表单重置
+                resetForm: function () {
+                    this.moduleForm.id = null;
+                    this.moduleForm.name = null;
+                    this.moduleForm.code = true;
+                },
+                // 获取选中行
+                selectionChange: function (rows) {
+                    var idArr = [];
+                    if (rows) {
+                        rows.forEach(row => {
+                            idArr.push(row.id);
+                        });
+                        this.ids = idArr;
+                    }
+                },
+                // 分页方法
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.getTableData();
+                },
+                handleCurrentChange(val) {
+                    this.pageIndex = val;
+                    this.getTableData();
+                },
+                // 分页重置
+                pageReset: function () {
+                    this.pageSize = 20;
+                    this.pageIndex = 1;
+                    this.total = 0;
+                }
+            },
+            created: function () {
+                this.getTableData();
+            }
+        });
+    </script>
+}

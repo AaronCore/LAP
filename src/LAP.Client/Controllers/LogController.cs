@@ -13,11 +13,7 @@ namespace LAP.Client.Controllers
     [Route("api/log")]
     public class LogController : ControllerBase
     {
-        private readonly LogService _logService;
-        public LogController(LogService logService)
-        {
-            _logService = logService;
-        }
+        private static readonly LogService LogService = new LogService();
 
         /// <summary>
         /// 添加日志
@@ -32,7 +28,7 @@ namespace LAP.Client.Controllers
                 return NotFound();
             }
 
-            await _logService.InsterLog(dto);
+            await LogService.InsterLog(dto);
 
             return Ok();
         }

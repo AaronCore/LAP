@@ -12,11 +12,7 @@ namespace LAP.EntityFrameworkCore.Application
     /// </summary>
     public class LogService
     {
-        private readonly DapperHelper _dapperHelper;
-        public LogService(DapperHelper dapperHelper)
-        {
-            _dapperHelper = dapperHelper;
-        }
+        private static readonly DapperHelper DapperHelper = new DapperHelper();
 
         /// <summary>
         /// 添加Log
@@ -42,7 +38,7 @@ namespace LAP.EntityFrameworkCore.Application
                 input.log_create_time,
                 create_time = DateTime.Now
             };
-            return await _dapperHelper.ExecuteAsync(sql, param);
+            return await DapperHelper.ExecuteAsync(sql, param);
         }
     }
 }

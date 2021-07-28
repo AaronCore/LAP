@@ -15,11 +15,6 @@ namespace LAP.EntityFrameworkCore
         private static readonly ConfigHelper ConfigHelper = new ConfigHelper();
         private static readonly string ConnectionString = ConfigHelper.GetValue<string>("MySQLConnection");
 
-        public DapperHelper()
-        {
-
-        }
-
         public IDbConnection Connection()
         {
             var connection = new MySqlConnection(ConnectionString);

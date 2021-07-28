@@ -13,11 +13,7 @@ namespace LAP.Client.Controllers
     [Route("api/statisticlog")]
     public class StatisticLogController : ControllerBase
     {
-        private readonly StatisticLogService _statisticLogService;
-        public StatisticLogController(StatisticLogService statisticLogService)
-        {
-            _statisticLogService = statisticLogService;
-        }
+        private static readonly StatisticLogService StatisticLogService = new StatisticLogService();
 
         /// <summary>
         /// 添加统计日志
@@ -32,7 +28,7 @@ namespace LAP.Client.Controllers
                 return NotFound();
             }
 
-            await _statisticLogService.InsterStatisticLog(dto);
+            await StatisticLogService.InsterStatisticLog(dto);
 
             return Ok();
         }
