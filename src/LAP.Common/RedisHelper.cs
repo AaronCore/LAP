@@ -7,7 +7,7 @@ namespace LAP.Common
 {
     public static class Redis
     {
-        static readonly Lazy<RedisClient> CliLazy = new Lazy<RedisClient>(() =>
+        private static readonly Lazy<RedisClient> CliLazy = new Lazy<RedisClient>(() =>
         {
             var redisConnection = new ConfigHelper().GetValue<string>("RedisConnection");
             var r = new RedisClient(redisConnection)

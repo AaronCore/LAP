@@ -16,7 +16,7 @@ namespace LAP.EntityFrameworkCore.Application
     /// </summary>
     public class ModuleService
     {
-        private static readonly DapperHelper DapperHelper = new DapperHelper();
+        private static readonly DapperHelper DapperHelper = new();
 
         /// <summary>
         /// 分页查询
