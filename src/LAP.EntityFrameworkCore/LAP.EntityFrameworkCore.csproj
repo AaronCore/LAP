@@ -5,17 +5,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="8.0.26" />
 		<PackageReference Include="Dapper" Version="2.0.90" />
+		<PackageReference Include="MySql.Data" Version="8.0.25" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\LAP.Common\LAP.Common.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Application\" />
-	  <Folder Include="Entity\" />
-	  <Folder Include="ViewModel\" />
 	</ItemGroup>
 </Project>

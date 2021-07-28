@@ -73,7 +73,7 @@ var homeTab = {
     name: 'home',
     title: '',
     show: true,
-    //url: 'aaa.html',
+    url: '/Dashboard/Index',
     icon: 'layui_icon font-size16 layui_icon_home',
     notClosable: true
 };
@@ -88,48 +88,50 @@ new Vue({
             menuDefaultActive: 'useDocTemplate',
             menuArr: [
                 {
-                    key: 'interfaceAuthManage',
-                    title: '接口认证管理',
+                    key: 'baseManage',
+                    title: '基础管理',
                     show: true,
                     url: '#',
-                    icon: 'el-icon-unlock',
+                    icon: 'el-icon-s-tools',
                     children: [
                         {
-                            key: 'roleList',
-                            title: '角色列表',
+                            key: 'mouduleList',
+                            title: '模块列表',
                             show: true,
-                            url: '/Role/Index',
-                            icon: 'el-icon-s-grid',
+                            url: '/Module/Index',
+                            icon: 'el-icon-menu',
                         },
-                        {
-                            key: 'InterfaceList',
-                            title: '接口列表',
-                            show: true,
-                            url: '/Interface/Index',
-                            icon: 'el-icon-s-grid',
-                        },
-                        {
-                            key: 'interfaceGroupList',
-                            title: '接口组列表',
-                            show: true,
-                            url: '/InterfaceGroup/Index',
-                            icon: 'el-icon-s-grid',
-                        }
                     ]
                 },
                 {
                     key: 'logManage',
-                    title: '日志管理',
+                    title: '日志分析',
                     show: true,
                     url: '#',
-                    icon: 'el-icon-notebook-2',
+                    icon: 'el-icon-s-management',
                     children: [
                         {
                             key: 'requestLogList',
                             title: '请求日志',
                             show: true,
                             url: '/RequestLog/Index',
-                            icon: 'el-icon-s-grid',
+                            icon: 'el-icon-menu',
+                        }
+                    ]
+                },
+                {
+                    key: 'statisticLogManage',
+                    title: '统计分析',
+                    show: true,
+                    url: '#',
+                    icon: 'el-icon-s-data',
+                    children: [
+                        {
+                            key: 'requestLogList1',
+                            title: '请求日志',
+                            show: true,
+                            url: '/RequestLog/Index',
+                            icon: 'el-icon-menu',
                         }
                     ]
                 }

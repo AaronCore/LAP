@@ -1,0 +1,111 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>登录页面</title>
+    <link href="/js/login/css/bootstrap.min.css?v=1.0.0" rel="stylesheet" />
+    <link href="/js/login/css/style.default.css?v=1.0.0" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="page login-page">
+        <div class="container d-flex align-items-center">
+            <div class="form-holder has-shadow">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="info d-flex align-items-center">
+                            <div class="content">
+                                <div class="logo">
+                                    <h1>欢迎登录</h1>
+                                </div>
+                                <p>日志分析平台 <span>Log Analysis Platform</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 bg-white">
+                        <div class="form d-flex align-items-center">
+                            <div class="content">
+                                <form class="form-validate">
+                                    <div class="form-group">
+                                        <input id="login-username" type="text" name="userName" required data-msg="请输入用户名" placeholder="用户名" value="admin" class="input-material">
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="login-password" type="password" name="passWord" required data-msg="请输入密码" placeholder="密码" class="input-material">
+                                    </div>
+                                    <button id="login" type="button" class="btn btn-primary">登录</button>
+                                    <div style="margin-top: -40px;">
+                                        <div class="custom-control custom-checkbox " style="float: right;">
+                                            <input type="checkbox" class="custom-control-input" id="check1">
+                                            <label class="custom-control-label" for="check1">记住账号&nbsp;&nbsp;</label>
+                                        </div>
+                                    </div>
+                                </form>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/jquery-3.0.0.min.js?v=1.0.0"></script>
+    <script src="/js/login/js/bootstrap.min.js?v=1.0.0"></script>
+    <script src="/js/login/js/front.js?v=1.0.0"></script>
+    <script>
+        $(function () {
+            //防止页面后退
+            history.pushState(null, null, document.URL);
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, document.URL);
+            });
+
+            // 判断上次是否勾选记住密码和自动登录
+            var check1s = localStorage.getItem("check1");
+            var oldName = localStorage.getItem("userName");
+
+            if (check1s == "true") {
+                $("#login-username").val(oldName);
+                $("#check1").prop('checked', true);
+            } else {
+                $("#login-username").val('');
+                $("#check1").prop('checked', false);
+            }
+            $("#login").click(function () {
+                var userName = $("#login-username").val();
+                var passWord = $("#login-password").val();
+
+                if (userName.length <= 0) {
+                    $("#login-username").focus();
+                    return false;
+                }
+                if (passWord.length <= 0) {
+                    $("#login-password").focus();
+                    return false;
+                }
+
+                localStorage.setItem("userName", userName)
+                var check1 = $("#check1").prop('checked');
+                localStorage.setItem("check1", check1);
+
+                $.post("/Login/Login", { username: userName, password: passWord }, function (res) {
+                    if (res.code == 0) {
+                        location.href = "/Home/Index";
+                    } else {
+                        alert("账号或密码错误...");
+                    }
+                });
+            });
+        });
+        $(document).keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#login").trigger("click");
+            }
+        });
+    </script>
+</body>
+</html>
