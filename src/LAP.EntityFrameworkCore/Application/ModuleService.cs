@@ -56,7 +56,7 @@ namespace LAP.EntityFrameworkCore.Application
         /// <returns></returns>
         public async Task<ModuleEntity> Find(int id)
         {
-            var sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules` WHERE id=@id;";
+            const string sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules` WHERE id=@id;";
             return await DapperHelper.QueryFirstAsync<ModuleEntity>(sql, new { id });
         }
 
@@ -71,8 +71,8 @@ namespace LAP.EntityFrameworkCore.Application
             using var transaction = conn.BeginTransaction();
             try
             {
-                var sql = @"INSERT INTO `modules` ( `name`, `code`, `created_by`, `created_time` )
-                        VALUES (@name, code, @created_by, @created_time);";
+                const string sql = @"INSERT INTO `modules` ( `name`, `code`, `created_by`, `created_time` )
+                                     VALUES (@name, code, @created_by, @created_time);";
 
                 var code = await DapperHelper.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),1)+100 AS 'max_id' FROM modules;");
                 var param = new
@@ -100,8 +100,19 @@ namespace LAP.EntityFrameworkCore.Application
         /// <returns></returns>
         public async Task<bool> UpdateModule(int id, string name)
         {
-            var sql = @"UPDATE `modules` SET `name` = @name WHERE `id` = @id;";
+            const string sql = @"UPDATE `modules` SET `name` = @name WHERE `id` = @id;";
             return await DapperHelper.ExecuteAsync(sql, new { id, name });
+        }
+
+        /// <summary>
+        /// 删除模块
+        /// </summary>
+        /// <param name="id">主键id</param>
+        /// <returns></returns>
+        public async Task<bool> DeleteModule(int id)
+        {
+            const string sql = @"DELETE FROM `modules` WHERE `id` = @id;";
+            return await DapperHelper.ExecuteAsync(sql, new { id });
         }
 
         /// <summary>
@@ -114,27 +125,16 @@ namespace LAP.EntityFrameworkCore.Application
         {
             if (id > 0)
             {
-                var sql = @"SELECT COUNT(id) AS 'id' FROM modules WHERE id!=@id AND `name`=@name;";
+                const string sql = @"SELECT COUNT(id) AS 'id' FROM modules WHERE id!=@id AND `name`=@name;";
                 var row = await DapperHelper.ExecuteScalarAsync<int>(sql, new { id, name });
                 return row > 0;
             }
             else
             {
-                var sql = @"SELECT COUNT(id) AS 'id' FROM modules WHERE `name`=@name;";
+                const string sql = @"SELECT COUNT(id) AS 'id' FROM modules WHERE `name`=@name;";
                 var row = await DapperHelper.ExecuteScalarAsync<int>(sql, new { name });
                 return row > 0;
             }
-        }
-
-        /// <summary>
-        /// 删除模块
-        /// </summary>
-        /// <param name="id">主键id</param>
-        /// <returns></returns>
-        public async Task<bool> DeleteModule(int id)
-        {
-            var sql = @"DELETE FROM `modules` WHERE `id` = @id;";
-            return await DapperHelper.ExecuteAsync(sql, new { id });
         }
     }
 }

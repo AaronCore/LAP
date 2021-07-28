@@ -13,7 +13,7 @@ namespace LAP.Client.Controllers
     [Route("api/statisticlog")]
     public class StatisticLogController : ControllerBase
     {
-        private static readonly StatisticLogService StatisticLogService = new StatisticLogService();
+        private static readonly StatisticLogService StatisticLogService = new();
 
         /// <summary>
         /// 添加统计日志

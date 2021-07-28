@@ -12,7 +12,7 @@ namespace LAP.EntityFrameworkCore.Application
     /// </summary>
     public class LogService
     {
-        private static readonly DapperHelper DapperHelper = new DapperHelper();
+        private static readonly DapperHelper DapperHelper = new();
 
         /// <summary>
         /// 添加Log
@@ -21,9 +21,8 @@ namespace LAP.EntityFrameworkCore.Application
         /// <returns></returns>
         public async Task<bool> InsterLog(LogInputDto input)
         {
-            var sql = @"INSERT INTO `logs` ( `id`, `module_code`, `level`, `request_url`, `request_body`, `method`, `exception`, `message`, `ip_address`, `remark`, `log_create_time`, `create_time` )
-                         VALUES
-	                        (@module_code, @level, @request_url, @request_body , @method, @exception, @message, @ip_address, @remark , @log_create_time, @create_time);";
+            const string sql = @"INSERT INTO `logs` ( `id`, `module_code`, `level`, `request_url`, `request_body`, `method`, `exception`, `message`, `ip_address`, `remark`, `log_create_time`, `create_time` )
+                                 VALUES (@module_code, @level, @request_url, @request_body , @method, @exception, @message, @ip_address, @remark , @log_create_time, @create_time);";
             var param = new
             {
                 input.module_code,

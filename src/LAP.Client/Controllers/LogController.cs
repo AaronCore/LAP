@@ -13,7 +13,7 @@ namespace LAP.Client.Controllers
     [Route("api/log")]
     public class LogController : ControllerBase
     {
-        private static readonly LogService LogService = new LogService();
+        private static readonly LogService LogService = new();
 
         /// <summary>
         /// 添加日志

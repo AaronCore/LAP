@@ -11,7 +11,7 @@ namespace LAP.Web.Controllers
 {
     public class ModuleController : Controller
     {
-        private static readonly ModuleService ModuleService = new ModuleService();
+        private static readonly ModuleService ModuleService = new();
 
         public IActionResult Index()
         {
