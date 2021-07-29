@@ -55,7 +55,6 @@ namespace LAP.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(ModuleEntity model)
         {
-            throw new Exception("post submit");
             if (await ModuleService.VerifyName(model.id, model.name))
             {
                 return Json(-1);

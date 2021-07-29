@@ -65,5 +65,16 @@ namespace LAP.Web.Controllers
             return Json(obj);
         }
 
+        /// <summary>
+        /// 获取日志信息
+        /// </summary>
+        /// <param name="id">主键id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetLog(int id)
+        {
+            var model = await LogService.Find(id);
+            return Json(model);
+        }
     }
 }
