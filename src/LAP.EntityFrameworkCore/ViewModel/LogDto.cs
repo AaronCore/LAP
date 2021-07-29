@@ -35,7 +35,7 @@ namespace LAP.EntityFrameworkCore.ViewModel
         /// <summary>
         /// 请求内容
         /// </summary>
-        public string request_body { get; set; }
+        public string request_form { get; set; }
         /// <summary>
         /// 请求方式(get、post、put、delete...)
         /// </summary>

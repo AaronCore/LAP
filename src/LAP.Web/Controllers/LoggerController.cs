@@ -52,7 +52,7 @@ namespace LAP.Web.Controllers
                     p.module_name,
                     p.level,
                     p.request_url,
-                    p.request_body,
+                    p.request_form,
                     p.method,
                     p.exception,
                     p.message,
