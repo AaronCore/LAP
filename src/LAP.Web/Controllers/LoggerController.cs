@@ -51,6 +51,7 @@ namespace LAP.Web.Controllers
                     p.module_code,
                     p.module_name,
                     p.level,
+                    p.request_path,
                     p.request_url,
                     p.request_form,
                     p.method,
