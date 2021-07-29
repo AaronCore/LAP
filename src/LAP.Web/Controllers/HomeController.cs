@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using LAP.Web.Filters;
 
 namespace LAP.Web.Controllers
 {
+    [ExceptionFilter]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

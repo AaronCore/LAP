@@ -11,7 +11,7 @@ function SalChain(items, call) {
     this.call = call;
 }
 
-SalChain.prototype.next = function() {
+SalChain.prototype.next = function () {
     if (++this.index < this.items.length) {
         this.call(this.items[this.index], this.index, this);
     }

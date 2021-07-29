@@ -20,13 +20,17 @@ namespace LAP.EntityFrameworkCore.Entity
         /// </summary>
         public int level { get; set; }
         /// <summary>
+        /// 请求路径
+        /// </summary>
+        public string request_path { get; set; }
+        /// <summary>
         /// 请求地址
         /// </summary>
         public string request_url { get; set; }
         /// <summary>
         /// 请求内容
         /// </summary>
-        public string request_body { get; set; }
+        public string request_form { get; set; }
         /// <summary>
         /// 请求方式(get、post、put、delete...)
         /// </summary>
@@ -54,6 +58,6 @@ namespace LAP.EntityFrameworkCore.Entity
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime create_time { get; set; }
+        public DateTime created_time { get; set; }
     }
 }

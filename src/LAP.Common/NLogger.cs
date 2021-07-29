@@ -129,23 +129,21 @@ namespace LAP.Common
         private static void WriteLog(object message, string folder)
         {
             var dt = DateTime.Now;
-            // var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            //var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             lock (LogWriteLockObj)
             {
                 try
                 {
-                    var dir = $@"{Environment.CurrentDirectory}\NLogs\{folder}\{dt:yyyy-MM-dd}";
+                    var dir = $@"{Environment.CurrentDirectory}\Logs\{folder}\{dt:yyyy-MM-dd}";
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
 
                     var path = Path.Combine(dir + @"\" + dt.ToString("yyyy-MM-dd HH") + ".log");
-                    using (var sw = new StreamWriter(path, true))
-                    {
-                        sw.WriteLine("{0} | {1}", dt.ToString("yyyy-MM-dd HH:mm:ss"), message);
-                        sw.Close();
-                    }
+                    using var sw = new StreamWriter(path, true);
+                    sw.WriteLine("{0} | {1}", dt.ToString("yyyy-MM-dd HH:mm:ss"), message);
+                    sw.Close();
                 }
                 catch (Exception)
                 {

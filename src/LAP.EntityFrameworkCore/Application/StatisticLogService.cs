@@ -31,7 +31,7 @@ namespace LAP.EntityFrameworkCore.Application
                 input.request_url,
                 input.message,
                 input.request_time,
-                create_time = DateTime.Now
+                created_time = DateTime.Now
             };
             return await DapperHelper.ExecuteAsync(sql, param);
         }

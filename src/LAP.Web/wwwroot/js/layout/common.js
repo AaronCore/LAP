@@ -1,5 +1,4 @@
-﻿
-var common = {
+﻿var common = {
     deletes: function (the, url, param) {
         the.$msgbox({
             title: '提示',
@@ -13,7 +12,7 @@ var common = {
                     instance.confirmButtonLoading = true;
                     instance.confirmButtonText = '执行中...';
                     $.post(url, param, function (res) {
-                        if (res.code == 0) {
+                        if (res === 1) {
                             api.showMsg("删除成功...", "success");
                             the.getTableData();
                         } else {
@@ -41,7 +40,7 @@ var common = {
                     instance.confirmButtonLoading = true;
                     instance.confirmButtonText = '执行中...';
                     $.post(url, param, function (res) {
-                        if (res.code == 0) {
+                        if (res === 1) {
                             api.showMsg("修改成功...", "success");
                             the.getTableData();
                         } else {

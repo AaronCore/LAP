@@ -25,7 +25,7 @@
                 <!--列表-->
                 <template>
                     <el-table :data="tableData" border size="medium" style="width:100%" v-on:selection-change="selectionChange">
-                        <el-table-column type="selection" width="40">
+                        <el-table-column type="selection" :selectable="checkSelect" width="40">
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
                         </el-table-column>
@@ -33,11 +33,11 @@
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="code" label="模块代码">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="CreateTime" label="创建时间" width="200">
+                        <el-table-column header-align="center" align="center" prop="created_time" label="创建时间" width="200">
                         </el-table-column>
                         <el-table-column header-align="center" label="操作" width="200">
                             <template slot-scope="scope">
-                                <el-button v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
+                                <el-button :style="scope.row.name === 'LAP' ? {display:'none'}:{display:'block'}" v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -112,7 +112,7 @@
                         api.showMsg("请选择数据...", "warning");
                         return false;
                     }
-                    common.deletes(this, '/InterfaceGroup/Deletes', { ids: this.ids });
+                    common.deletes(this, '/Module/Deletes', { ids: this.ids });
                 },
                 // 重置
                 reset: function () {
@@ -123,7 +123,7 @@
                 // 编辑
                 edit: function (row) {
                     var self = this;
-                    $.get("/InterfaceGroup/GetInterfaceGroup?id=" + row.id, function (res) {
+                    $.get("/Module/GetModule?id=" + row.id, function (res) {
                         self.moduleForm = res;
                         self.dialogFormVisible = true;
                     });
@@ -134,13 +134,13 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             $.post("/Module/Submit", self.moduleForm, function (res) {
-                                if (res.code === 1) {
+                                if (res === 1) {
                                     self.resetForm();// 重置表单
                                     api.showMsg("保存成功...", "success");
                                     self.dialogFormVisible = false;// 关闭窗口
                                     self.getTableData();// 重新查询
-                                } else if (res.code === -1) {
-                                    api.showMsg("模块名称:" + self.moduleForm.Name + "重复!", "error");
+                                } else if (res === -1) {
+                                    api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
                                     return false;
                                 }
                                 else {
@@ -173,7 +173,10 @@
                 resetForm: function () {
                     this.moduleForm.id = null;
                     this.moduleForm.name = null;
-                    this.moduleForm.code = true;
+                    this.moduleForm.code = null;
+                },
+                checkSelect: function (row, index) {
+                    return row.name === "LAP" ? false : true;
                 },
                 // 获取选中行
                 selectionChange: function (rows) {

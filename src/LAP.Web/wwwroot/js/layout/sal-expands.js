@@ -1,7 +1,6 @@
 var expandItems = {};
 
 var sal_expand_util = {
-
 	find_tag_node: function(ele, tagName) {
 		const result = [];
 		this._find_tag_node(ele, tagName, result);
@@ -25,7 +24,7 @@ var sal_expand_util = {
 (function() {
 
 // 	var all = document.all;
-// 
+//
 // 	var appBox = document.getElementById('app');
 // 	var template = appBox.getElementsByTagName('template');
 // 	// var tables = template[0].all;sal-base

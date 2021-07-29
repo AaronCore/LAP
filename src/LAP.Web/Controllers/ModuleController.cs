@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using LAP.EntityFrameworkCore.Application;
 using LAP.EntityFrameworkCore.Entity;
 using LAP.EntityFrameworkCore.ViewModel;
+using LAP.Web.Filters;
 
 namespace LAP.Web.Controllers
 {
+    [ExceptionFilter]
     public class ModuleController : Controller
     {
         private static readonly ModuleService ModuleService = new();
@@ -39,7 +41,7 @@ namespace LAP.Web.Controllers
                     p.id,
                     p.name,
                     p.code,
-                    created_time = p.create_time.ToString("yyyy-MM-dd HH:mm:ss")
+                    created_time = p.created_time.ToString("yyyy-MM-dd HH:mm:ss")
                 }).ToList()
             };
             return Json(obj);
@@ -53,19 +55,57 @@ namespace LAP.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(ModuleEntity model)
         {
+            throw new Exception("post submit");
             if (await ModuleService.VerifyName(model.id, model.name))
             {
                 return Json(-1);
             }
+
             if (model.id > 0)
             {
-                await ModuleService.UpdateModule(model.id, model.name);
+                if (!await ModuleService.UpdateModule(model.id, model.name))
+                {
+                    return Json(0);
+                }
             }
             else
             {
-                await ModuleService.InsterModule(model);
+                model.created_by = "admin";
+                if (!await ModuleService.InsterModule(model))
+                {
+                    return Json(0);
+                }
             }
             return Json(1);
         }
+
+        /// <summary>
+        /// 获取模块信息
+        /// </summary>
+        /// <param name="id">主键id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetModule(int id)
+        {
+            var model = await ModuleService.Find(id);
+            return Json(model);
+        }
+
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">主键ids</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Deletes(string[] ids)
+        {
+            foreach (var id in ids)
+            {
+                if (string.IsNullOrWhiteSpace(id)) continue;
+                await ModuleService.DeleteModule(Convert.ToInt32(id));
+            }
+            return Json(1);
+        }
+
     }
 }

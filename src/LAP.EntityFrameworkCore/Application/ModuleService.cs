@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Dapper;
 using LAP.Common;
 using LAP.EntityFrameworkCore.Entity;
-using LAP.EntityFrameworkCore.ViewModel;
 
 namespace LAP.EntityFrameworkCore.Application
 {
@@ -50,6 +49,16 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
+        /// 获取模块列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<ModuleEntity>> GetList()
+        {
+            const string sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules`;";
+            return await DapperHelper.QueryAsync<ModuleEntity>(sql);
+        }
+
+        /// <summary>
         /// 获取模块
         /// </summary>
         /// <param name="id">主键id</param>
@@ -63,32 +72,39 @@ namespace LAP.EntityFrameworkCore.Application
         /// <summary>
         /// 添加Log
         /// </summary>
-        /// <param name="input">Module模型</param>
+        /// <param name="model">Module模型</param>
         /// <returns></returns>
         public async Task<bool> InsterModule(ModuleEntity model)
         {
             using var conn = DapperHelper.Connection();
-            using var transaction = conn.BeginTransaction();
-            try
             {
-                const string sql = @"INSERT INTO `modules` ( `name`, `code`, `created_by`, `created_time` )
-                                     VALUES (@name, code, @created_by, @created_time);";
-
-                var code = await DapperHelper.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),1)+100 AS 'max_id' FROM modules;");
-                var param = new
+                using var transaction = conn.BeginTransaction();
+                try
                 {
-                    model.name,
-                    code,
-                    model.created_by,
-                    create_time = DateTime.Now
-                };
-                await DapperHelper.ExecuteAsync(sql, param);
-                transaction.Commit();
-                return true;
-            }
-            finally
-            {
-                transaction.Rollback();
+                    const string sql = @"INSERT INTO `modules` ( `name`, `code`, `created_by`, `created_time` )
+                                     VALUES (@name, @code, @created_by, @created_time);";
+
+                    var code = await DapperHelper.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),0)+1+100 AS 'max_id' FROM modules;");
+                    var param = new
+                    {
+                        model.name,
+                        code,
+                        model.created_by,
+                        created_time = DateTime.Now
+                    };
+                    await DapperHelper.ExecuteAsync(sql, param);
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+                finally
+                {
+                    transaction.Dispose();
+                }
             }
         }
 

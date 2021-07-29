@@ -111,10 +111,17 @@ new Vue({
                     icon: 'el-icon-s-management',
                     children: [
                         {
-                            key: 'requestLogList',
-                            title: '请求日志',
+                            key: 'dashboardList',
+                            title: 'Dashboard',
                             show: true,
-                            url: '/RequestLog/Index',
+                            url: '/Logger/Dashboard',
+                            icon: 'el-icon-s-platform',
+                        },
+                        {
+                            key: 'loggerList',
+                            title: '日志管理',
+                            show: true,
+                            url: '/Logger/Index',
                             icon: 'el-icon-menu',
                         }
                     ]
@@ -126,6 +133,13 @@ new Vue({
                     url: '#',
                     icon: 'el-icon-s-data',
                     children: [
+                        {
+                            key: 'dashboardList',
+                            title: 'Dashboard',
+                            show: true,
+                            url: '/Logger/Dashboard',
+                            icon: 'el-icon-s-platform',
+                        },
                         {
                             key: 'requestLogList1',
                             title: '请求日志',
@@ -160,11 +174,7 @@ new Vue({
             }
         };
         api.showMsgByHtml = function (title, html) {
-            _this.$notify({
-                title: title,
-                dangerouslyUseHTMLString: true,
-                message: html
-            });
+            _this.$notify({ title: title, dangerouslyUseHTMLString: true, message: html });
         };
         // 2.弹出窗----需要固定自定义的,先不做统一接口
         // 3.子页面参数
@@ -183,16 +193,10 @@ new Vue({
                 var tabs = _this.tabItems.filter(function (tab) {
                     return tab.name === key;
                 });
-
                 if (tabs.length > 0) {
                     activeName = key;
                 } else {
-                    _this.tabItems.push({
-                        title: title,
-                        name: key,
-                        url: url,
-                        icon: icon
-                    });
+                    _this.tabItems.push({ title: title, name: key, url: url, icon: icon });
                     activeName = key;
                 }
                 _this.tabActive = activeName;
@@ -227,16 +231,10 @@ new Vue({
         };
         // 5.全屏loading遮罩
         api.openLoading = function (time) {
-            _this.loading = _this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            if (time)
-                setTimeout(function () {
-                    _this.loading.close();
-                }, time);
+            _this.loading = _this.$loading({ lock: true, text: 'Loading', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
+            if (time) {
+                setTimeout(function () { _this.loading.close(); }, time);
+            }
         };
         api.closeLoading = function () {
             _this.loading.close();
@@ -260,9 +258,7 @@ new Vue({
     watch: {},
     updated: function () {
         var _this = this;
-        _this.$nextTick(function () {
-            _this.bindTabTilesOncontextmenu();
-        });
+        _this.$nextTick(function () { _this.bindTabTilesOncontextmenu(); });
     },
     methods: {
         signOut: function () {
@@ -272,9 +268,7 @@ new Vue({
         },
         hasShowItem: function (arr) {
             if (arr && arr.length > 0) {
-                return arr.filter(function (e) {
-                    return e.show;
-                });
+                return arr.filter(function (e) { return e.show; });
             }
             return [];
         },
@@ -342,9 +336,7 @@ new Vue({
                     _this.tabsPopper.isShow = true;
                     _this.tabsPopper.id = this.getAttribute('id').replace("tab-", "");
                     _this.tabsPopper.top = (e.y - 6) + 'px';
-                    _this.tabsPopper.left = ((_this.gobalParams.windowFullWidth - e.x) <
-                        110 ? _this.gobalParams.windowFullWidth - 110 :
-                        e.x - 6) + 'px';
+                    _this.tabsPopper.left = ((_this.gobalParams.windowFullWidth - e.x) < 110 ? _this.gobalParams.windowFullWidth - 110 : e.x - 6) + 'px';
                     // console.log(_this.tabsPopper);
                     e.preventDefault();
                 };

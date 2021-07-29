@@ -14,8 +14,9 @@ var gobal = {
             var domAll = document.all,
                 domArr = new Array();
             for (var i = 0; i < domAll.length; i++) {
-                if (rege.test(domAll[i].id))
+                if (rege.test(domAll[i].id)) {
                     domArr.push(domAll[i]);
+                }
             }
             return domArr;
         }
@@ -33,7 +34,6 @@ var gobal = {
 (function () {
     // 初始计算参数值
     gobal.params.windowIsXs = gobal.params.windowFullWidth < 768;
-
     // 获取浏览器的可视高度
     var timer;
     window.onresize = function () {
@@ -52,12 +52,10 @@ var gobal = {
             }
         }, 50);
     }
-
     gobal.events.onresize.push(function (width, height) {
         // console.log('width:' + width + 'height:' + height);
         gobal.params.windowFullWidth = width;
         gobal.params.windowFullHeight = height;
         gobal.params.windowIsXs = gobal.params.windowFullWidth < 768;
     });
-
 })();
