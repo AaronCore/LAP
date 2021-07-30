@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using LAP.Common;
 using LAP.EntityFrameworkCore.Application;
 using LAP.EntityFrameworkCore.Enum;
 using LAP.EntityFrameworkCore.ViewModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LAP.Web.Filters
 {
@@ -30,10 +30,10 @@ namespace LAP.Web.Filters
             {
                 module_code = 101,
                 level = (int)LogLevel.Error,
-                request_path = request.Path.ToString().ToLower(),
-                request_url = (request.Path + request.QueryString).ToLower(),
+                request_path = request.Path.ToString(),
+                request_url = request.Path + request.QueryString,
                 request_form = dic.ToJson(),
-                method = request.Method.ToLower(),
+                method = request.Method,
                 exception = context.Exception.ToString(),
                 message = context.Exception.Message,
                 ip_address = context.HttpContext.Connection.RemoteIpAddress?.ToString(),

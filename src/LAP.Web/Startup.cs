@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LAP.EntityFrameworkCore.Application;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using LAP.Web.MiddlerWare;
 
 namespace LAP.Web
 {
@@ -25,9 +25,6 @@ namespace LAP.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            //services.AddScoped<LogService>();
-            //services.AddScoped<ModuleService>();
-            //services.AddScoped<StatisticLogService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +40,8 @@ namespace LAP.Web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseRequestLog();
 
             app.UseEndpoints(endpoints =>
             {

@@ -112,7 +112,7 @@ new Vue({
                     children: [
                         {
                             key: 'dashboardList',
-                            title: 'Dashboard',
+                            title: '仪表盘',
                             show: true,
                             url: '/Logger/Dashboard',
                             icon: 'el-icon-s-platform',
@@ -135,7 +135,7 @@ new Vue({
                     children: [
                         {
                             key: 'dashboardList',
-                            title: 'Dashboard',
+                            title: '仪表盘',
                             show: true,
                             url: '/Logger/Dashboard',
                             icon: 'el-icon-s-platform',

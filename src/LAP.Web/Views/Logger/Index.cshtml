@@ -2,5 +2,177 @@
     ViewData["Title"] = "日志列表";
 }
 
-<h2>日志管理</h2>
+<div id="logApp">
+    <el-card class="box-card">
+        <el-container>
+            <el-header>
+                <el-form ref="searchForm" :inline="true" :model="searchForm">
+                    <el-row :gutter="10">
+                        <el-col :span="12">
+                            <el-form-item label="搜索：">
+                                <el-input style="width:300px;" size="medium" v-model="searchForm.searchValue" autocomplete="off" placeholder="请输入关键字"></el-input>
+                            </el-form-item>
+                            <el-select v-model="moduleCodeValue" filterable clearable placeholder="模块">
+                                <el-option v-for="item in modules" :key="item.value" :label="item.text" :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-select v-model="logLevelValue" filterable clearable placeholder="日志类型">
+                                <el-option v-for="item in logLevels" :key="item.value" :label="item.text" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-button type="primary" v-on:click="search" size="medium" icon="el-icon-search">查询</el-button>
+                            <el-button type="primary" v-on:click="reset" size="medium" icon="el-icon-refresh">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-header>
+            <el-main>
+                <!--列表-->
+                <template>
+                    <el-table :data="tableData" border size="medium" style="width: 100%;" :max-height="maxHeight">
+                        <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="module_name" width="150" label="模块">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="level" width="150" label="日志等级">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.level==1" type="info" size="small">Debug</el-tag>
+                                <el-tag v-if="scope.row.level==2" type="primary" size="small">Info</el-tag>
+                                <el-tag v-if="scope.row.level==3" type="warning" size="small">Warn</el-tag>
+                                <el-tag v-if="scope.row.level==4" type="danger" size="small">Error</el-tag>
+                                <el-tag v-if="scope.row.level==5" type="danger" size="small">Fatal</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="request_path" label="请求路径">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="log_create_time" label="日志创建时间" width="200">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="created_time" label="创建时间" width="200">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" label="操作" width="200">
+                            <template slot-scope="scope">
+                                <el-button v-on:click="details(scope.row)" type="primary" plain size="mini">详情</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-row :gutter="20">
+                        <el-col :span="8" :offset="8">
+                            <el-pagination v-on:size-change="handleSizeChange"
+                                           v-on:current-change="handleCurrentChange"
+                                           :page-sizes="pageSizes"
+                                           :page-size="pageSize"
+                                           :current-page="1"
+                                           layout="total, sizes, prev, pager, next, jumper"
+                                           :total="total">
+                            </el-pagination>
+                        </el-col>
+                    </el-row>
+                </template>
+            </el-main>
+        </el-container>
+    </el-card>
+</div>
+
+@section scripts {
+    <script>
+        new Vue({
+            el: "#logApp",
+            data() {
+                return {
+                    maxHeight: gobal.params.tableMaxHeight - 10,
+                    tableData: null,
+                    // 分页
+                    pageSizes: [30, 50, 100, 150],
+                    pageSize: 30,
+                    pageIndex: 1,
+                    total: 0,
+                    searchForm: {
+                        searchValue: null
+                    },
+                    logLevels: [],
+                    logLevelValue: null,
+                    modules: [],
+                    moduleCodeValue: null
+                }
+            },
+            methods: {
+                // 查询
+                search: function () {
+                    this.pageReset();
+                    this.getTableData();
+                },
+                // 重置
+                reset: function () {
+                    this.moduleCodeValue = null;
+                    this.logLevelValue = null;
+                    this.searchForm.searchValue = null;
+                    this.pageReset();
+                    this.getTableData();
+                },
+                //获取列表
+                getTableData: function () {
+                    var self = this;
+                    var options = {
+                        pageIndex: (self.pageIndex != 0 ? self.pageIndex : 1),
+                        pageSize: self.pageSize,
+                        moduleCode: self.moduleCodeValue,
+                        logLevel: self.logLevelValue,
+                        searchKey: self.searchForm.searchValue
+                    };
+                    $.get("/Logger/Load", options, function (res) {
+                        self.tableData = res.data;
+                        self.pageIndex = res.pageIndex;
+                        self.pageSize = res.pageSize;
+                        self.total = res.total;
+                    });
+                },
+                details: function (row) {
+                    layer.open({
+                        type: 2,
+                        title: '详情',
+                        shadeClose: true,
+                        maxmin: true,
+                        shade: 0.8,
+                        area: ['95%', '90%'],
+                        content: '/Logger/Details?id=' + row.id
+                    });
+                },
+                getModule() {
+                    var self = this;
+                    $.get("/Logger/GetMoudleList", function (res) {
+                        self.modules = res;
+                    });
+                },
+                getLogLevel() {
+                    var self = this;
+                    $.get("/Logger/GetLogLevelList", function (res) {
+                        self.logLevels = res;
+                    });
+                },
+                // 分页方法
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.getTableData();
+                },
+                handleCurrentChange(val) {
+                    this.pageIndex = val;
+                    this.getTableData();
+                },
+                // 分页重置
+                pageReset: function () {
+                    this.pageIndex = 1;
+                    this.pageSize = 30;
+                    this.total = 0;
+                }
+            },
+            created: function () {
+                this.getLogLevel();
+                this.getModule();
+                this.getTableData();
+            }
+        })
+    </script>
+}
 

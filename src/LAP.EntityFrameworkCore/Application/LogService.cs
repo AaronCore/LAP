@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using LAP.Common;
-using LAP.EntityFrameworkCore.Entity;
 using LAP.EntityFrameworkCore.ViewModel;
 
 namespace LAP.EntityFrameworkCore.Application
@@ -49,10 +46,12 @@ namespace LAP.EntityFrameworkCore.Application
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
-        public async Task<LogEntity> Find(int id)
+        public async Task<LogDto> Find(int id)
         {
-            const string sql = @"SELECT `id`, `module_code`, `level`, `request_path`, `request_url`, `request_form`, `method`, `exception`, `message`, `ip_address`, `remark`, `log_create_time`, `created_time` FROM  `logs` WHERE id=@id;";
-            return await DapperHelper.QueryFirstAsync<LogEntity>(sql, new { id });
+            const string sql = @"SELECT t1.id, t1.module_code, t2.`name` AS 'module_name', t1.`level`,t1.request_path, t1.request_url, t1.request_form, t1.method, t1.exception, 
+                                        t1.message, t1.ip_address, t1.remark, t1.log_create_time, t1.created_time FROM `logs` AS t1, modules AS t2 
+                                 WHERE 1=1 AND t1.module_code = t2.`code` AND t1.id=@id;";
+            return await DapperHelper.QueryFirstAsync<LogDto>(sql, new { id });
         }
 
         /// <summary>
@@ -62,8 +61,9 @@ namespace LAP.EntityFrameworkCore.Application
         /// <param name="pageSize">分页大小</param>
         /// <param name="moduleCode">模块代码</param>
         /// <param name="logLevel">日志等级</param>
+        /// <param name="searchKey">查询条件</param>
         /// <returns></returns>
-        public async Task<PagedList<LogDto>> PageQuery(int pageIndex, int pageSize, int moduleCode, int logLevel)
+        public async Task<PagedList<LogDto>> PageQuery(int pageIndex, int pageSize, int moduleCode, int logLevel, string searchKey)
         {
             --pageIndex;
             var pagedList = new PagedList<LogDto>();
@@ -75,20 +75,26 @@ namespace LAP.EntityFrameworkCore.Application
             var sql = @"SELECT t1.id, t1.module_code, t2.`name` AS 'module_name', t1.`level`,t1.request_path, t1.request_url, t1.request_form, t1.method, t1.exception, 
                                t1.message, t1.ip_address, t1.remark, t1.log_create_time, t1.created_time FROM `logs` AS t1, modules AS t2 
                         WHERE 1=1 AND t1.module_code = t2.`code` ";
+
+            if (!string.IsNullOrWhiteSpace(searchKey))
+            {
+                sql += " AND t1.request_path LIKE CONCAT('%',@searchKey,'%')";
+                parameters.Add("@searchKey", searchKey);
+            }
             if (moduleCode > 0)
             {
-                sql += " and t1.module_code=@module_code";
+                sql += " AND t1.module_code=@module_code";
                 parameters.Add("@module_code", moduleCode);
             }
             if (logLevel > 0)
             {
-                sql += " and t1.level=@level";
+                sql += " AND t1.level=@level";
                 parameters.Add("@level", logLevel);
             }
 
             pagedList.total = (await DapperHelper.QueryAsync<LogDto>(sql, parameters)).Count();
 
-            sql += " order by t1.created_time desc limit @pageIndex,@pageSize";
+            sql += " ORDER BY t1.created_time DESC LIMIT @pageIndex,@pageSize";
 
             pagedList.dataList = await DapperHelper.QueryAsync<LogDto>(sql, parameters);
             return pagedList;

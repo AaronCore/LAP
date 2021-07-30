@@ -10,7 +10,17 @@ namespace LAP.Web.Controllers
     [ExceptionFilter]
     public class StatisticLogController : Controller
     {
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Details()
         {
             return View();
         }

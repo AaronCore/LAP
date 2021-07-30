@@ -36,13 +36,13 @@ namespace LAP.EntityFrameworkCore.Application
             var sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules` WHERE 1=1 ";
             if (!string.IsNullOrWhiteSpace(searchKey))
             {
-                sql += " and name LIKE CONCAT('%',@searchKey,'%')";
+                sql += " AND name LIKE CONCAT('%',@searchKey,'%')";
                 parameters.Add("@searchKey", searchKey);
             }
 
             pagedList.total = (await DapperHelper.QueryAsync<ModuleEntity>(sql, parameters)).Count();
 
-            sql += " order by created_time desc limit @pageIndex,@pageSize";
+            sql += " ORDER BY created_time DESC LIMIT @pageIndex,@pageSize";
 
             pagedList.dataList = await DapperHelper.QueryAsync<ModuleEntity>(sql, parameters);
             return pagedList;
