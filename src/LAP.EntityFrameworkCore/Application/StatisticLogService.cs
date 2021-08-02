@@ -32,10 +32,12 @@ namespace LAP.EntityFrameworkCore.Application
         /// </summary>
         /// <param name="pageIndex">分页下标</param>
         /// <param name="pageSize">分页大小</param>
-        /// <param name="moduleCode">模块代码</param>
         /// <param name="searchKey">查询条件</param>
+        /// <param name="moduleCode">模块代码</param>
+        /// <param name="startDate">开始日期</param>
+        /// <param name="endDate">结束日期</param>
         /// <returns></returns>
-        public async Task<PagedList<StatisticLogDto>> PageQuery(int pageIndex, int pageSize, int moduleCode, string searchKey)
+        public async Task<PagedList<StatisticLogDto>> PageQuery(int pageIndex, int pageSize, string searchKey, int moduleCode, string startDate, string endDate)
         {
             --pageIndex;
             var pagedList = new PagedList<StatisticLogDto>();
@@ -57,6 +59,16 @@ namespace LAP.EntityFrameworkCore.Application
             {
                 sql += " AND t1.module_code=@module_code";
                 parameters.Add("@module_code", moduleCode);
+            }
+            if (!string.IsNullOrWhiteSpace(startDate))
+            {
+                sql += " AND DATE(t1.created_time)>=@startDate";
+                parameters.Add("@startDate", startDate);
+            }
+            if (!string.IsNullOrWhiteSpace(endDate))
+            {
+                sql += " AND DATE(t1.created_time)<=@endDate";
+                parameters.Add("@endDate", endDate);
             }
 
             pagedList.total = (await DapperHelper.QueryAsync<StatisticLogDto>(sql, parameters)).Count();

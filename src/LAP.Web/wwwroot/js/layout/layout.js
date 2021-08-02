@@ -111,7 +111,7 @@ new Vue({
                     icon: 'el-icon-s-management',
                     children: [
                         {
-                            key: 'dashboardList',
+                            key: 'logDashboard',
                             title: '仪表盘',
                             show: true,
                             url: '/Logger/Dashboard',
@@ -134,21 +134,28 @@ new Vue({
                     icon: 'el-icon-s-data',
                     children: [
                         {
-                            key: 'dashboardList',
+                            key: 'statisticLogDashboard',
                             title: '仪表盘',
                             show: true,
-                            url: '/Logger/Dashboard',
+                            url: '/StatisticLog/Dashboard',
                             icon: 'el-icon-s-platform',
                         },
                         {
-                            key: 'requestLogList1',
+                            key: 'statisticLogList',
                             title: '请求日志',
                             show: true,
-                            url: '/RequestLog/Index',
+                            url: '/StatisticLog/Index',
                             icon: 'el-icon-menu',
                         }
                     ]
-                }
+                },
+                {
+                    key: 'warningManage',
+                    title: '预警管理',
+                    show: true,
+                    url: '#',
+                    icon: 'el-icon-message-solid',
+                },
             ],
             tabItems: [homeTab],
             tabActive: homeTab.key,

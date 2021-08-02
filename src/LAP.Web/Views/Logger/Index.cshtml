@@ -8,20 +8,24 @@
             <el-header>
                 <el-form ref="searchForm" :inline="true" :model="searchForm">
                     <el-row :gutter="10">
-                        <el-col :span="12">
+                        <el-col :span="15">
                             <el-form-item label="搜索：">
-                                <el-input style="width:300px;" size="medium" v-model="searchForm.searchValue" autocomplete="off" placeholder="请输入关键字"></el-input>
+                                <el-input style="width:250px;" size="medium" v-model="searchForm.searchValue" autocomplete="off" placeholder="请输入关键字"></el-input>
                             </el-form-item>
-                            <el-select v-model="moduleCodeValue" filterable clearable placeholder="模块">
+                            <el-select v-model="searchForm.moduleCodeValue" filterable clearable placeholder="模块">
                                 <el-option v-for="item in modules" :key="item.value" :label="item.text" :value="item.value">
                                 </el-option>
                             </el-select>
-                            <el-select v-model="logLevelValue" filterable clearable placeholder="日志类型">
+                            <el-select style="width:150px;" v-model="searchForm.logLevelValue" filterable clearable placeholder="日志类型">
                                 <el-option v-for="item in logLevels" :key="item.value" :label="item.text" :value="item.value">
                                 </el-option>
                             </el-select>
+                            <el-date-picker style="width:150px;" type="date" v-model="searchForm.startDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="开始时间">
+                            </el-date-picker>
+                            <el-date-picker style="width:150px;" type="date" v-model="searchForm.endDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="结束时间">
+                            </el-date-picker>
                         </el-col>
-                        <el-col :span="10">
+                        <el-col :span="6">
                             <el-button type="primary" v-on:click="search" size="medium" icon="el-icon-search">查询</el-button>
                             <el-button type="primary" v-on:click="reset" size="medium" icon="el-icon-refresh">重置</el-button>
                         </el-col>
@@ -75,7 +79,7 @@
     </el-card>
 </div>
 
-@section scripts {
+@section Scripts {
     <script>
         new Vue({
             el: "#logApp",
@@ -89,12 +93,14 @@
                     pageIndex: 1,
                     total: 0,
                     searchForm: {
-                        searchValue: null
+                        searchValue: null,
+                        logLevelValue: null,
+                        moduleCodeValue: null,
+                        startDate: null,
+                        endDate: null,
                     },
                     logLevels: [],
-                    logLevelValue: null,
                     modules: [],
-                    moduleCodeValue: null
                 }
             },
             methods: {
@@ -105,9 +111,11 @@
                 },
                 // 重置
                 reset: function () {
-                    this.moduleCodeValue = null;
-                    this.logLevelValue = null;
+                    this.searchForm.moduleCodeValue = null;
+                    this.searchForm.logLevelValue = null;
                     this.searchForm.searchValue = null;
+                    this.searchForm.startDate = null;
+                    this.searchForm.endDate = null;
                     this.pageReset();
                     this.getTableData();
                 },
@@ -117,9 +125,11 @@
                     var options = {
                         pageIndex: (self.pageIndex != 0 ? self.pageIndex : 1),
                         pageSize: self.pageSize,
-                        moduleCode: self.moduleCodeValue,
-                        logLevel: self.logLevelValue,
-                        searchKey: self.searchForm.searchValue
+                        searchKey: self.searchForm.searchValue,
+                        moduleCode: self.searchForm.moduleCodeValue,
+                        logLevel: self.searchForm.logLevelValue,
+                        startDate: self.searchForm.startDate,
+                        endDate: self.searchForm.endDate,
                     };
                     $.get("/Logger/Load", options, function (res) {
                         self.tableData = res.data;
@@ -141,7 +151,7 @@
                 },
                 getModule() {
                     var self = this;
-                    $.get("/Logger/GetMoudleList", function (res) {
+                    $.get("/Module/GetMoudleList", function (res) {
                         self.modules = res;
                     });
                 },

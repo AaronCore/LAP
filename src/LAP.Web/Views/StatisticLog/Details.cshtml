@@ -3,5 +3,98 @@
     ViewData["Title"] = "详情";
 }
 
-<h2>Details</h2>
+@section Css {
+    <style type="text/css">
+        p {
+            color: red;
+            width: 98%;
+            height: auto;
+            word-break: break-all;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        .el_row {
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+}
+
+<div id="statisticLogDetailsApp" v-clock>
+    <template>
+        <section style="margin-left: 20px; margin-top: 20px;">
+            <el-row :gutter="20" class="el_row">
+                <el-col :span="6">模块：<span style="color: red;">{{ logFrom.module_name }}</span></el-col>
+                <el-col :span="6">执行动作：{{ logFrom.action }} </el-col>
+                <el-col :span="6">请求时间：{{ logFrom.request_time }}</el-col>
+                <el-col :span="6">创建时间：{{ logFrom.created_time }}</el-col>
+            </el-row>
+            <el-divider></el-divider>
+            <el-row :gutter="20" class="el_row">
+                <el-col :span="12">
+                    <h3>请求页面：</h3>
+                    <p>{{ logFrom.request_page }}</p>
+                </el-col>
+                <el-col :span="12">
+                    <h3>请求地址：</h3>
+                    <p>{{ logFrom.request_url }}</p>
+                </el-col>
+            </el-row>
+            <el-divider></el-divider>
+            <h3>备注信息：</h3>
+            <p>{{ logFrom.message }}</p>
+        </section>
+    </template>
+</div>
+
+@section Scripts {
+    <script>
+        new Vue({
+            el: '#statisticLogDetailsApp',
+            data() {
+                return {
+                    logFrom: {
+                        id: null,
+                        module_code: null,
+                        module_name: null,
+                        request_page: null,
+                        action: null,
+                        request_url: null,
+                        message: null,
+                        request_time: null,
+                        created_time: null
+                    }
+                }
+            },
+            methods: {
+                details: function () {
+                    var self = this;
+                    $.get('/StatisticLog/GetStatisticLog?id=' + self.logFrom.id, function (res) {
+                        self.logFrom = res;
+                    });
+                },
+                requestParam: function (name) {
+                    var search = location.search.slice(1);
+                    var arr = search.split("&");
+                    for (var i = 0; i < arr.length; i++) {
+                        var ar = arr[i].split("=");
+                        if (ar[0] == name) {
+                            if (unescape(ar[1]) == 'undefined') {
+                                return "";
+                            } else {
+                                return unescape(ar[1]);
+                            }
+                        }
+                    }
+                    return "";
+                }
+            },
+            created: function () {
+                this.logFrom.id = this.requestParam('id');
+                this.details();
+            }
+        });
+    </script>
+}
 

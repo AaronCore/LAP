@@ -33,14 +33,16 @@ namespace LAP.Web.Controllers
         /// </summary>
         /// <param name="pageIndex">分页下标</param>
         /// <param name="pageSize">分页大小</param>
+        /// <param name="searchKey">查询条件</param>
         /// <param name="moduleCode">模块代码</param>
         /// <param name="logLevel">日志等级</param>
-        /// <param name="searchKey">查询条件</param>
+        /// <param name="startDate">开始日期</param>
+        /// <param name="endDate">结束日期</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Load(int pageIndex, int pageSize, int moduleCode, int logLevel, string searchKey)
+        public async Task<IActionResult> Load(int pageIndex, int pageSize, string searchKey, int moduleCode, int logLevel, string startDate, string endDate)
         {
-            var query = await LogService.PageQuery(pageIndex, pageSize, moduleCode, logLevel, searchKey);
+            var query = await LogService.PageQuery(pageIndex, pageSize, searchKey, moduleCode, logLevel, startDate, endDate);
             var obj = new
             {
                 pageIndex,
@@ -76,23 +78,24 @@ namespace LAP.Web.Controllers
         public async Task<IActionResult> GetLog(int id)
         {
             var model = await LogService.Find(id);
-            return Json(model);
-        }
-
-        /// <summary>
-        /// 获取模块列表
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetMoudleList()
-        {
-            var modules = await ModuleService.GetList();
-            var result = modules.OrderBy(p => p.name).Select(p => new
+            var obj = new
             {
-                text = p.name,
-                value = p.code
-            });
-            return Json(result);
+                model.id,
+                model.module_code,
+                model.module_name,
+                model.level,
+                model.request_path,
+                model.request_url,
+                model.request_form,
+                model.method,
+                model.exception,
+                model.message,
+                model.ip_address,
+                model.remark,
+                log_create_time = model.log_create_time.ToString("yyyy-MM-dd HH:mm:ss"),
+                created_time = model.created_time.ToString("yyyy-MM-dd HH:mm:ss")
+            };
+            return Json(obj);
         }
 
         /// <summary>

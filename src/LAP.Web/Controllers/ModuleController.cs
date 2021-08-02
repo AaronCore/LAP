@@ -79,6 +79,22 @@ namespace LAP.Web.Controllers
         }
 
         /// <summary>
+        /// 获取模块列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetMoudleList()
+        {
+            var modules = await ModuleService.GetList();
+            var result = modules.OrderBy(p => p.name).Select(p => new
+            {
+                text = p.name,
+                value = p.code
+            });
+            return Json(result);
+        }
+
+        /// <summary>
         /// 获取模块信息
         /// </summary>
         /// <param name="id">主键id</param>
@@ -105,6 +121,5 @@ namespace LAP.Web.Controllers
             }
             return Json(1);
         }
-
     }
 }
