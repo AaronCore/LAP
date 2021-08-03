@@ -36,12 +36,13 @@ namespace LAP.Web.MiddlerWare
             //    {
             //        module_code = 101,
             //        request_page = context.Request.Path,
-            //        action = (int)StatisticLogAction.页面访问,
+            //        action = (int)StatisticAction.页面访问,
             //        request_url = (context.Request.Path + context.Request.QueryString).ToLower(),
             //        request_time = DateTime.Now
             //    };
             //    await StatisticLogService.InsterStatisticLog(requestModel);
             //}
+
             // Call the next delegate/middleware in the pipeline
             await this._next(context);
         }
