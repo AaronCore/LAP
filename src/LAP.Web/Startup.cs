@@ -41,7 +41,7 @@ namespace LAP.Web
 
             app.UseAuthorization();
 
-            app.UseRequestLog();
+            //app.UseRequest();
 
             app.UseEndpoints(endpoints =>
             {
