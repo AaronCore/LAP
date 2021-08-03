@@ -25,8 +25,8 @@ namespace LAP.HttpClient
                 var dt = DateTime.Now;
                 try
                 {
-                    var dir = $@"{AppDomain.CurrentDomain.BaseDirectory}\LAP.HttpClient.Logs\{folder}\{dt:yyyy-MM-dd}";
-                    //var dir = $@"{Environment.CurrentDirectory}\LAP.HttpClient.Logs\{folder}\{dt:yyyy-MM-dd}";
+                    var dir = $@"{AppDomain.CurrentDomain.BaseDirectory}\LAP.HttpClient.Logs\{folder}";
+                    //var dir = $@"{Environment.CurrentDirectory}\LAP.HttpClient.Logs\{folder}";
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);

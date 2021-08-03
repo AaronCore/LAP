@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using LAP.HttpClient.Enum;
 
 namespace WebForm.Example
 {
@@ -11,7 +10,11 @@ namespace WebForm.Example
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                var context = HttpContext.Current;
+                Task.Run(async () => await MyLogger.AddStatisticLog(context, StatisticAction.页面访问));
+            }
         }
     }
 }

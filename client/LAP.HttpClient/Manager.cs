@@ -31,7 +31,7 @@ namespace LAP.HttpClient
         {
             try
             {
-                await HttpHelper.PostAsync(HttpClientConfig.AddLogUrl, contentJson);
+                await HttpHelper.PostAsync(HttpClientConfig.AddStatisticLogUrl, contentJson);
             }
             catch (Exception e)
             {

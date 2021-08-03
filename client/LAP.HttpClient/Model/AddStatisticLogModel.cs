@@ -23,7 +23,7 @@ namespace LAP.HttpClient.Model
         /// 执行动作,例如：登录、登出...
         /// </summary>
         [Required]
-        public StatisticLogAction action { get; set; }
+        public StatisticAction action { get; set; }
         /// <summary>
         /// 请求地址
         /// </summary>
