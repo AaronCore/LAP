@@ -21,7 +21,7 @@ namespace LAP.Client.Controllers
         /// <param name="dto">日志输入模型</param>
         /// <returns></returns>
         [HttpPost("addlog")]
-        public async Task<IActionResult> AddLog(LogInputDto dto)
+        public async Task<IActionResult> AddLog([FromBody] LogInputDto dto)
         {
             if (dto == null)
             {

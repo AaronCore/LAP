@@ -21,7 +21,7 @@ namespace LAP.Client.Controllers
         /// <param name="dto">统计日志输入模型</param>
         /// <returns></returns>
         [HttpPost("addstatisticlog")]
-        public async Task<IActionResult> AddStatisticLog(StatisticLogInputDto dto)
+        public async Task<IActionResult> AddStatisticLog([FromBody] StatisticLogInputDto dto)
         {
             if (dto == null)
             {
