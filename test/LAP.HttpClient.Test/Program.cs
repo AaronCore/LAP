@@ -19,11 +19,10 @@ namespace LAP.HttpClient.Test
 
             for (int i = 1; i <= 500; i++)
             {
+                Thread.Sleep(r.Next(15) * 1000);
+
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine($"{DateTime.Now}  第{i}次执行...");
-
-                var num = r.Next(10);
-                Thread.Sleep(num * 1000);
 
                 // 种子数据
                 var data = SeedData.LogSeedData();
