@@ -9,7 +9,7 @@ namespace LAP.HttpClient.Test
             var jsonSetting = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                Formatting = Formatting.None
+                Formatting = Formatting.Indented
             };
             return obj == null ? default : JsonConvert.SerializeObject(obj, jsonSetting);
         }
