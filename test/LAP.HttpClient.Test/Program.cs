@@ -39,6 +39,7 @@ namespace LAP.HttpClient.Test
                     request_path = data.path,
                     request_url = data.url,
                     method = data.method.ToString(),
+                    exception = data.exception,
                     message = data.message,
                     ip_address = data.ip,
                     log_create_time = DateTime.Now
