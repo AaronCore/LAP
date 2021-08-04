@@ -63,3 +63,4 @@
 #*.RTF   diff=astextplain
 
 *.cshtml linguist-language=csharp
+*.js linguist-language=csharp
