@@ -12,7 +12,7 @@ namespace LAP.HttpClient.Test
     public class SeedData
     {
         private static readonly int[] MoudleCode = { 102, 103, 104, 105, 106, 107, 107, 109 };
-        public static Log LogSeedData()
+        public static Log CreateLogData()
         {
             var log = new Faker<Log>()
                     .RuleFor(x => x.module_code, z => z.PickRandom(MoudleCode))
@@ -20,11 +20,14 @@ namespace LAP.HttpClient.Test
                     .RuleFor(x => x.ip, z => z.Internet.Ip())
                     .RuleFor(x => x.path, z => z.Internet.UrlRootedPath())
                     .RuleFor(x => x.url, z => z.Internet.UrlWithPath())
-                    .RuleFor(u => u.level, f => f.PickRandom<LogLevel>())
-                    .RuleFor(u => u.action, f => f.PickRandom<StatisticAction>())
-                    .RuleFor(u => u.method, f => f.PickRandom<Method>())
+                    .RuleFor(x => x.level, z => z.PickRandom<LogLevel>())
+                    .RuleFor(x => x.action, z => z.PickRandom<StatisticAction>())
+                    .RuleFor(x => x.method, z => z.PickRandom<Method>())
                     .RuleFor(x => x.exception, z => z.Lorem.Sentence())
                     .RuleFor(x => x.message, z => z.Lorem.Word())
+                    //.RuleFor(x => x.date, z => z.Date.Soon())
+                    .RuleFor(x => x.date, z => z.Date.Recent())
+                    //.RuleFor(x => x.date, z => z.Date.Between(Convert.ToDateTime("2021-01-01"), Convert.ToDateTime("2021-08-04")))
                     .Generate(1);
             return log.First();
         }
@@ -42,6 +45,7 @@ namespace LAP.HttpClient.Test
         public Method method { get; set; }
         public string exception { get; set; }
         public string message { get; set; }
+        public DateTime date { get; set; }
     }
 
     public enum Method

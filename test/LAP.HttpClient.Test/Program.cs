@@ -15,44 +15,42 @@ namespace LAP.HttpClient.Test
     {
         static async Task Main(string[] args)
         {
-            Random r = new Random();
-
             for (int i = 1; i <= 500; i++)
             {
-                Thread.Sleep(r.Next(15) * 1000);
+                Thread.Sleep(1000);
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine($"{DateTime.Now}  第{i}次执行...");
 
                 // 种子数据
-                var data = SeedData.LogSeedData();
+                var logData = SeedData.CreateLogData();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(data.ToJson());
+                Console.WriteLine(logData.ToJson());
 
                 // add log
                 var logModel = new AddLogModel()
                 {
-                    module_code = data.module_code,
-                    level = data.level,
-                    request_path = data.path,
-                    request_url = data.url,
-                    method = data.method.ToString(),
-                    exception = data.exception,
-                    message = data.message,
-                    ip_address = data.ip,
-                    log_create_time = DateTime.Now
+                    module_code = logData.module_code,
+                    level = logData.level,
+                    request_path = logData.path,
+                    request_url = logData.url,
+                    method = logData.method.ToString(),
+                    exception = logData.exception,
+                    message = logData.message,
+                    ip_address = logData.ip,
+                    log_create_time = logData.date
                 };
                 await Manager.Log(logModel.ToJson());
 
                 // add statistic log
                 var statisticLogModel = new AddStatisticLogModel()
                 {
-                    module_code = data.module_code,
-                    request_page = data.path,
-                    action = data.action,
-                    request_url = data.url,
-                    request_time = DateTime.Now
+                    module_code = logData.module_code,
+                    request_page = logData.path,
+                    action = logData.action,
+                    request_url = logData.url,
+                    request_time = logData.date
                 };
                 await Manager.StatisticLog(statisticLogModel.ToJson());
             }
