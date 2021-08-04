@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace WebMvc.Example
 {
-    public class MyLogger
+    public class LapLogger
     {
         private const int MODULE_CODE = 102;
 
@@ -23,7 +23,7 @@ namespace WebMvc.Example
         /// <returns></returns>
         public static async Task AddLog(HttpContextBase context, LogLevel level, string message = null, string remark = null)
         {
-            Dictionary<string, object> dic = new Dictionary<string, object>();
+            var dic = new Dictionary<string, object>();
             if (context.Request.Form.Count > 0)
             {
                 foreach (string key in context.Request.Form.Keys)
@@ -62,7 +62,7 @@ namespace WebMvc.Example
             {
                 module_code = MODULE_CODE,
                 request_page = context.Request.Path,
-                action = StatisticAction.页面访问,
+                action = action,
                 request_url = context.Request.Url?.AbsoluteUri,
                 request_time = DateTime.Now
             };

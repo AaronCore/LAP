@@ -1,6 +1,6 @@
-﻿using LAP.HttpClient.Enum;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using LAP.HttpClient.Enum;
 
 namespace WebMvc.Example.Filters
 {
@@ -10,7 +10,7 @@ namespace WebMvc.Example.Filters
         {
             base.OnException(context);
             var httpContext = context.HttpContext;
-            Task.Run(async () => await MyLogger.AddLog(httpContext, LogLevel.Error));
+            Task.Run(async () => await LapLogger.AddLog(httpContext, LogLevel.Error));
         }
     }
 }
