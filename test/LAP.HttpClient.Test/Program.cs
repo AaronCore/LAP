@@ -20,7 +20,7 @@ namespace LAP.HttpClient.Test
             for (int i = 1; i <= 500; i++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"第{i}次执行...");
+                Console.WriteLine($"{DateTime.Now}  第{i}次执行...");
 
                 var num = r.Next(10);
                 Thread.Sleep(num * 1000);
