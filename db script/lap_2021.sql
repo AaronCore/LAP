@@ -11,54 +11,11 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 30/07/2021 17:16:47
+ Date: 05/08/2021 17:00:59
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for lap_account_mens
--- ----------------------------
-DROP TABLE IF EXISTS `lap_account_mens`;
-CREATE TABLE `lap_account_mens`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `account_id` int NOT NULL COMMENT '账号id',
-  `menu_id` int NOT NULL COMMENT '菜单id',
-  `created_time` datetime(0) NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'LAP账号菜单表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for lap_accounts
--- ----------------------------
-DROP TABLE IF EXISTS `lap_accounts`;
-CREATE TABLE `lap_accounts`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `account` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账号',
-  `password` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
-  `enabled` bit(1) NOT NULL COMMENT '是否启用',
-  `created_by` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
-  `created_time` datetime(0) NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'LAP账号表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for lap_menus
--- ----------------------------
-DROP TABLE IF EXISTS `lap_menus`;
-CREATE TABLE `lap_menus`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `parent_id` int NOT NULL COMMENT '父id',
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单名称',
-  `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单路径',
-  `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图标icon',
-  `sort` int NULL DEFAULT NULL COMMENT '排序号',
-  `enabled` bit(1) NOT NULL COMMENT '是否启用',
-  `created_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
-  `created_time` datetime(0) NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'LAP菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for logs
@@ -79,7 +36,7 @@ CREATE TABLE `logs`  (
   `log_create_time` datetime(0) NOT NULL COMMENT '日志创建时间',
   `created_time` datetime(0) NOT NULL COMMENT '创建实际',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '错误日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2301 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '错误日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for modules
@@ -92,7 +49,7 @@ CREATE TABLE `modules`  (
   `created_by` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
   `created_time` datetime(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '项目模块表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '项目模块表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for statistic_logs
@@ -108,6 +65,6 @@ CREATE TABLE `statistic_logs`  (
   `request_time` datetime(0) NOT NULL COMMENT '访问时间',
   `created_time` datetime(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '统计日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 751 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '统计日志表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
