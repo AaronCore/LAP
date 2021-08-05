@@ -13,7 +13,6 @@ namespace LAP.Web.Controllers
     public class StatisticLogController : Controller
     {
         private static readonly StatisticLogService StatisticLogService = new();
-        private static readonly ModuleService ModuleService = new();
 
         public IActionResult Index()
         {
@@ -21,6 +20,11 @@ namespace LAP.Web.Controllers
         }
 
         public IActionResult Details()
+        {
+            return View();
+        }
+
+        public IActionResult Analysis()
         {
             return View();
         }
