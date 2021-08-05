@@ -3,16 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
 using LAP.HttpClient.Enum;
+using LAP.HttpClient.Model;
 
 namespace LAP.HttpClient.Test
 {
-    public class SeedData
+    public class LogSeedData
     {
+        /// <summary>
+        /// add log
+        /// </summary>
+        /// <returns></returns>
+        public static async Task AddLog()
+        {
+            for (int i = 1; i <= 500; i++)
+            {
+                Thread.Sleep(1000);
+
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"{DateTime.Now}  第{i}次执行...");
+
+                // 种子数据
+                var logData = CreateLogData();
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(logData.ToJson());
+
+                // add log
+                var logModel = new AddLogModel()
+                {
+                    module_code = logData.module_code,
+                    level = logData.level,
+                    request_path = logData.path,
+                    request_url = logData.url,
+                    method = logData.method.ToString(),
+                    exception = logData.exception,
+                    message = logData.message,
+                    ip_address = logData.ip,
+                    log_create_time = logData.date
+                };
+                await Manager.Log(logModel.ToJson());
+
+                // add statistic log
+                var statisticLogModel = new AddStatisticLogModel()
+                {
+                    module_code = logData.module_code,
+                    request_page = logData.path,
+                    action = logData.action,
+                    request_url = logData.url,
+                    request_time = logData.date
+                };
+                await Manager.StatisticLog(statisticLogModel.ToJson());
+            }
+        }
+
         private static readonly int[] MoudleCode = { 102, 103, 104, 105, 106, 107, 107, 109 };
-        public static Log CreateLogData()
+        private static Log CreateLogData()
         {
             var log = new Faker<Log>()
                     .RuleFor(x => x.module_code, z => z.PickRandom(MoudleCode))
