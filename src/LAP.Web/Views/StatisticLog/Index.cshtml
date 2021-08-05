@@ -118,7 +118,6 @@
                         endDate: self.searchForm.endDate,
                     };
                     $.get("/StatisticLog/Load", options, function (res) {
-                        console.log(res);
                         self.tableData = res.data;
                         self.pageIndex = res.pageIndex;
                         self.pageSize = res.pageSize;

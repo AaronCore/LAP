@@ -88,52 +88,25 @@ new Vue({
             menuDefaultActive: 'useDocTemplate',
             menuArr: [
                 {
-                    key: 'baseManage',
-                    title: '基础管理',
+                    key: 'mouduleList',
+                    title: '模块管理',
                     show: true,
-                    url: '#',
+                    url: '/Module/Index',
                     icon: 'el-icon-s-tools',
-                    children: [
-                        {
-                            key: 'mouduleList',
-                            title: '模块列表',
-                            show: true,
-                            url: '/Module/Index',
-                            icon: 'el-icon-menu',
-                        },
-                    ]
                 },
                 {
-                    key: 'logManage',
+                    key: 'loggerList',
                     title: '日志分析',
                     show: true,
-                    url: '#',
+                    url: '/Logger/Index',
                     icon: 'el-icon-s-management',
-                    children: [
-                        {
-                            key: 'loggerList',
-                            title: '日志管理',
-                            show: true,
-                            url: '/Logger/Index',
-                            icon: 'el-icon-menu',
-                        }
-                    ]
                 },
                 {
-                    key: 'statisticLogManage',
+                    key: 'statisticLogList',
                     title: '统计分析',
                     show: true,
-                    url: '#',
+                    url: '/StatisticLog/Index',
                     icon: 'el-icon-s-data',
-                    children: [
-                        {
-                            key: 'statisticLogList',
-                            title: '请求日志',
-                            show: true,
-                            url: '/StatisticLog/Index',
-                            icon: 'el-icon-menu',
-                        }
-                    ]
                 },
                 {
                     key: 'warningManage',

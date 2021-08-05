@@ -1,6 +1,19 @@
 ﻿@{
     ViewData["Title"] = "模块管理";
 }
+
+@section Css {
+    <style type="text/css">
+        .btn-none {
+            display: none;
+        }
+
+        .btn-block {
+            display: block;
+        }
+    </style>
+}
+
 <div id="moduleApp">
     <template>
         <el-container>
@@ -35,9 +48,9 @@
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="created_time" label="创建时间" width="200">
                         </el-table-column>
-                        <el-table-column header-align="center" label="操作" width="200">
+                        <el-table-column header-align="center" align="center" label="操作" width="200">
                             <template slot-scope="scope">
-                                <el-button :style="scope.row.name === 'LAP' ? {display:'none'}:{display:'block'}" v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
+                                <el-button :class="scope.row.name === 'LAP' ? 'btn-none' : 'btn-block'" v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
                             </template>
                         </el-table-column>
                     </el-table>

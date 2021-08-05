@@ -44,7 +44,7 @@
             </el-menu>
         </div>
         <div class="right_box" :class="{right_box_full:isCollapse}">
-            <div class="nav_top">
+            @*<div class="nav_top">
                 <span class="left_item">
                     <el-button title="展开/收起左侧导航" v-on:click="isCollapse = !isCollapse" size="small">
                         <i class="layui_icon" :class="{layui_icon_spread_left:isCollapse,layui_icon_shrink_right:!isCollapse}"></i>
@@ -56,8 +56,8 @@
                             Supalle<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            @*<el-dropdown-item icon="el-icon-fa-user"> 个人中心</el-dropdown-item>
-                                <el-dropdown-item icon="el-icon-fa-key" v-on:click.native="editPwd"> 修改密码</el-dropdown-item>*@
+                            <el-dropdown-item icon="el-icon-fa-user"> 个人中心</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-fa-key" v-on:click.native="editPwd"> 修改密码</el-dropdown-item>
                             <el-dropdown-item icon="el-icon-switch-button" v-on:click.native="signOut" divided> 登出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -65,7 +65,7 @@
                 <span class="right_item">
                     <el-button type="text"><i class="el-icon-bell"></i></el-button>
                 </span>
-            </div>
+            </div>*@
             <div class="right_body">
                 <el-tabs v-model="tabActive" type="card" v-on:tab-remove="tabClose">
                     <el-tab-pane v-for="(item, index) in tabItems" :key="item.name" :label="item.title" :name="item.name" :closable="!item.notClosable">
