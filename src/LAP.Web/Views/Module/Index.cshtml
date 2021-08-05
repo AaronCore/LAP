@@ -77,37 +77,39 @@
     <script>
         new Vue({
             el: "#moduleApp",
-            data: {
-                searchForm: {
-                    searchValue: null
-                },
-                dialogFormVisible: false,
-                moduleForm: {
-                    id: null,
-                    name: null,
-                    code: null
-                },
-                ids: null,
-                tableData: null,
-                // 分页
-                pageSizes: [20, 30, 50, 100],
-                pageSize: 20,
-                pageIndex: 1,
-                total: 0
+            data() {
+                return {
+                    searchForm: {
+                        searchValue: null
+                    },
+                    dialogFormVisible: false,
+                    moduleForm: {
+                        id: null,
+                        name: null,
+                        code: null
+                    },
+                    ids: null,
+                    tableData: null,
+                    // 分页
+                    pageSizes: [20, 30, 50, 100],
+                    pageSize: 20,
+                    pageIndex: 1,
+                    total: 0,
+                }
             },
             methods: {
                 // 查询
-                search: function () {
+                search() {
                     this.pageReset();
                     this.getTableData();
                 },
                 // 添加
-                add: function () {
+                add() {
                     this.resetForm();
                     this.dialogFormVisible = true;
                 },
                 // 批量删除
-                dels: function () {
+                dels() {
                     if (this.ids.length <= 0) {
                         api.showMsg("请选择数据...", "warning");
                         return false;
@@ -115,39 +117,41 @@
                     common.deletes(this, '/Module/Deletes', { ids: this.ids });
                 },
                 // 重置
-                reset: function () {
+                reset() {
                     this.searchForm.searchValue = null;
                     this.pageReset();
                     this.getTableData();
                 },
                 // 编辑
-                edit: function (row) {
+                edit(row) {
                     var self = this;
-                    $.get("/Module/GetModule?id=" + row.id, function (res) {
-                        self.moduleForm = res;
-                        self.dialogFormVisible = true;
-                    });
+                    $.get("/Module/GetModule?id=" + row.id,
+                        function (res) {
+                            self.moduleForm = res;
+                            self.dialogFormVisible = true;
+                        });
                 },
                 // 提交
-                submitForm: function (formName) {
+                submitForm(formName) {
                     var self = this;
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            $.post("/Module/Submit", self.moduleForm, function (res) {
-                                if (res === 1) {
-                                    self.resetForm();// 重置表单
-                                    api.showMsg("保存成功...", "success");
-                                    self.dialogFormVisible = false;// 关闭窗口
-                                    self.getTableData();// 重新查询
-                                } else if (res === -1) {
-                                    api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
-                                    return false;
-                                }
-                                else {
-                                    api.showMsg("保存失败...", "error");
-                                    return false;
-                                }
-                            });
+                            $.post("/Module/Submit",
+                                self.moduleForm,
+                                function (res) {
+                                    if (res === 1) {
+                                        self.resetForm(); // 重置表单
+                                        api.showMsg("保存成功...", "success");
+                                        self.dialogFormVisible = false; // 关闭窗口
+                                        self.getTableData(); // 重新查询
+                                    } else if (res === -1) {
+                                        api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
+                                        return false;
+                                    } else {
+                                        api.showMsg("保存失败...", "error");
+                                        return false;
+                                    }
+                                });
                         } else {
                             api.showMsg("error submit...", "error");
                             return false;
@@ -155,7 +159,7 @@
                     });
                 },
                 //获取列表
-                getTableData: function () {
+                getTableData() {
                     var self = this;
                     var options = {
                         pageIndex: self.pageIndex,
@@ -170,16 +174,15 @@
                     });
                 },
                 // 表单重置
-                resetForm: function () {
-                    this.moduleForm.id = null;
-                    this.moduleForm.name = null;
-                    this.moduleForm.code = null;
+                resetForm() {
+                    var form = this.moduleForm;
+                    Object.keys(form).forEach(key => (form[key] = null));
                 },
-                checkSelect: function (row, index) {
+                checkSelect(row, index) {
                     return row.name === "LAP" ? false : true;
                 },
                 // 获取选中行
-                selectionChange: function (rows) {
+                selectionChange(rows) {
                     var idArr = [];
                     if (rows) {
                         rows.forEach(row => {
@@ -198,13 +201,13 @@
                     this.getTableData();
                 },
                 // 分页重置
-                pageReset: function () {
+                pageReset() {
                     this.pageSize = 20;
                     this.pageIndex = 1;
                     this.total = 0;
                 }
             },
-            created: function () {
+            created() {
                 this.getTableData();
             }
         });

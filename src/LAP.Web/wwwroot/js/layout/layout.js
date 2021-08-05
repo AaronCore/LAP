@@ -111,13 +111,6 @@ new Vue({
                     icon: 'el-icon-s-management',
                     children: [
                         {
-                            key: 'logDashboard',
-                            title: '仪表盘',
-                            show: true,
-                            url: '/Logger/Dashboard',
-                            icon: 'el-icon-s-platform',
-                        },
-                        {
                             key: 'loggerList',
                             title: '日志管理',
                             show: true,
@@ -133,13 +126,6 @@ new Vue({
                     url: '#',
                     icon: 'el-icon-s-data',
                     children: [
-                        {
-                            key: 'statisticLogDashboard',
-                            title: '仪表盘',
-                            show: true,
-                            url: '/StatisticLog/Dashboard',
-                            icon: 'el-icon-s-platform',
-                        },
                         {
                             key: 'statisticLogList',
                             title: '请求日志',

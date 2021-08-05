@@ -13,11 +13,6 @@ namespace LAP.Web.Controllers
         private static readonly LogService LogService = new();
         private static readonly ModuleService ModuleService = new();
 
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
-
         public IActionResult Index()
         {
             return View();
@@ -87,7 +82,7 @@ namespace LAP.Web.Controllers
                 model.request_path,
                 model.request_url,
                 model.request_form,
-                model.method,
+                method = model.method.ToUpper(),
                 model.exception,
                 model.message,
                 model.ip_address,

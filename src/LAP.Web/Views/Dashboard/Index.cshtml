@@ -2,5 +2,95 @@
     ViewData["Title"] = "仪表盘";
 }
 
-<h2>Dashboard Index</h2>
+<div id="dashboardApp">
+    <el-card class="box-card">
+        <el-container>
+            <el-header>
+                <el-form ref="searchForm" :inline="true" :model="searchForm">
+                    <el-row :gutter="10">
+                        <el-col :span="15">
+                            <el-select v-model="searchForm.moduleCodeValue" filterable clearable placeholder="模块">
+                                <el-option v-for="item in modules" :key="item.value" :label="item.text" :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-date-picker v-model="searchForm.startAndEndDate"
+                                            type="datetimerange"
+                                            :picker-options="pickerOptions"
+                                            range-separator="至"
+                                            start-placeholder="开始日期"
+                                            end-placeholder="结束日期"
+                                            align="right">
+                            </el-date-picker>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-button type="primary" v-on:click="search" size="medium" icon="el-icon-search">查询</el-button>
+                            <el-button type="primary" v-on:click="reset" size="medium" icon="el-icon-refresh">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-header>
+        </el-container>
+    </el-card>
+</div>
 
+@section Scripts {
+    <script>
+        new Vue({
+            el: "#dashboardApp",
+            data() {
+                return {
+                    searchForm: {
+                        moduleCodeValue: null,
+                        startAndEndDate: null,
+                    },
+                    modules: [],
+                    pickerOptions: {
+                        shortcuts: [{
+                            text: '最近一周',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }, {
+                            text: '最近一个月',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }, {
+                            text: '最近三个月',
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                                picker.$emit('pick', [start, end]);
+                            }
+                        }]
+                    },
+                }
+            },
+            methods: {
+                search() {
+                    console.log(this.searchForm);
+                },
+                reset() {
+                    var form = this.searchForm;
+                    Object.keys(form).forEach(key => (form[key] = null));
+                },
+                getModule() {
+                    var self = this;
+                    $.get("/Module/GetMoudleList", function (res) {
+                        self.modules = res;
+                    });
+                }
+            },
+            created() {
+                this.getModule();
+            }
+        });
+    </script>
+}

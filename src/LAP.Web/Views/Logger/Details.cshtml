@@ -25,28 +25,26 @@
         <section style="margin-left: 20px; margin-top: 20px;">
             <el-row :gutter="20" class="el_row">
                 <el-col :span="6">模块：<span style="color: red;">{{ logFrom.module_name }}</span></el-col>
-                <el-col :span="6">
-                    日志等级：
-                    <el-tag v-if="logFrom.level==1" type="info" size="small">Debug</el-tag>
-                    <el-tag v-if="logFrom.level==2" type="primary" size="small">Info</el-tag>
-                    <el-tag v-if="logFrom.level==3" type="warning" size="small">Warn</el-tag>
-                    <el-tag v-if="logFrom.level==4" type="danger" size="small">Error</el-tag>
-                    <el-tag v-if="logFrom.level==5" type="danger" size="small">Fatal</el-tag>
-                </el-col>
-                <el-col :span="6"></el-col>
-                <el-col :span="6"></el-col>
+                <el-col :span="18">路径：<span style="color: red;">{{ logFrom.request_path }}</span></el-col>
             </el-row>
             <br />
             <el-row :gutter="20" class="el_row">
-                <el-col :span="6">接口地址：<span style="color: red;">{{ logFrom.request_path }}</span></el-col>
-                <el-col :span="6">请求IP：{{ logFrom.ip_address }}</el-col>
-                <el-col :span="6">日志产生时间：{{ logFrom.log_create_time }}</el-col>
+                <el-col :span="6">IP：{{ logFrom.ip_address }}</el-col>
+                <el-col :span="6">
+                    日志等级：
+                    <el-tag v-if="logFrom.level==1" type="info" size="small" effect="dark">Debug</el-tag>
+                    <el-tag v-if="logFrom.level==2" type="primary" size="small" effect="dark">Info</el-tag>
+                    <el-tag v-if="logFrom.level==3" type="warning" size="small" effect="dark">Warn</el-tag>
+                    <el-tag v-if="logFrom.level==4" type="danger" size="small" effect="dark">Error</el-tag>
+                    <el-tag v-if="logFrom.level==5" type="danger" size="small" effect="dark">Fatal</el-tag>
+                </el-col>
+                <el-col :span="6">日志创建时间：{{ logFrom.log_create_time }}</el-col>
                 <el-col :span="6">创建时间：{{ logFrom.created_time }}</el-col>
             </el-row>
             <el-divider></el-divider>
             <el-row :gutter="20" class="el_row">
                 <el-col :span="12">
-                    <h3>{{ logFrom.method.toUpperCase() }} 请求地址：</h3>
+                    <h3>{{ logFrom.method }} 请求地址：</h3>
                     <p>{{ logFrom.request_url }}</p>
                 </el-col>
                 <el-col :span="12">
@@ -97,30 +95,20 @@
                 }
             },
             methods: {
-                details: function () {
+                details() {
                     var self = this;
                     $.get('/Logger/GetLog?id=' + self.logFrom.id, function (res) {
                         self.logFrom = res;
                     });
                 },
-                requestParam: function (name) {
-                    var search = location.search.slice(1);
-                    var arr = search.split("&");
-                    for (var i = 0; i < arr.length; i++) {
-                        var ar = arr[i].split("=");
-                        if (ar[0] == name) {
-                            if (unescape(ar[1]) == 'undefined') {
-                                return "";
-                            } else {
-                                return unescape(ar[1]);
-                            }
-                        }
-                    }
-                    return "";
+                getQueryParam(key) {
+                    let params = new URLSearchParams(location.search.slice(1));
+                    let param = params.get(key);
+                    return param;
                 }
             },
-            created: function () {
-                this.logFrom.id = this.requestParam('id');
+            created() {
+                this.logFrom.id = this.getQueryParam('id');
                 this.details();
             }
         });

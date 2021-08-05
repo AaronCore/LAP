@@ -15,11 +15,6 @@ namespace LAP.Web.Controllers
         private static readonly StatisticLogService StatisticLogService = new();
         private static readonly ModuleService ModuleService = new();
 
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
-
         public IActionResult Index()
         {
             return View();

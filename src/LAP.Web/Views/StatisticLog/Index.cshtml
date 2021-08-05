@@ -37,9 +37,9 @@
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="module_name" width="150" label="模块">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="request_page" label="请求页面">
+                        <el-table-column header-align="center" align="center" prop="request_page" label="页面地址">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="action" width="150" label="执行动作">
+                        <el-table-column header-align="center" align="center" prop="action" width="150" label="动作">
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="request_time" label="请求时间" width="200">
                         </el-table-column>
@@ -94,22 +94,19 @@
             },
             methods: {
                 // 查询
-                search: function () {
+                search() {
                     this.pageReset();
                     this.getTableData();
                 },
                 // 重置
-                reset: function () {
-                    this.searchForm.moduleCodeValue = null;
-                    this.searchForm.logLevelValue = null;
-                    this.searchForm.searchValue = null;
-                    this.searchForm.startDate = null;
-                    this.searchForm.endDate = null;
+                reset() {
+                    var form = this.searchForm;
+                    Object.keys(form).forEach(key => (form[key] = null));
                     this.pageReset();
                     this.getTableData();
                 },
                 //获取列表
-                getTableData: function () {
+                getTableData() {
                     var self = this;
                     var options = {
                         pageIndex: (self.pageIndex != 0 ? self.pageIndex : 1),
@@ -128,7 +125,7 @@
                         self.total = res.total;
                     });
                 },
-                details: function (row) {
+                details(row) {
                     layer.open({
                         type: 2,
                         title: '详情',
@@ -155,13 +152,13 @@
                     this.getTableData();
                 },
                 // 分页重置
-                pageReset: function () {
+                pageReset() {
                     this.pageIndex = 1;
                     this.pageSize = 30;
                     this.total = 0;
                 }
             },
-            created: function () {
+            created() {
                 this.getModule();
                 this.getTableData();
             }
