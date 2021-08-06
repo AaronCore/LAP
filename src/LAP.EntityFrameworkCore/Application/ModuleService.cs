@@ -84,7 +84,7 @@ namespace LAP.EntityFrameworkCore.Application
                     const string sql = @"INSERT INTO `modules` ( `name`, `code`, `created_by`, `created_time` )
                                      VALUES (@name, @code, @created_by, @created_time);";
 
-                    var code = await DapperHelper.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),0)+1+100 AS 'max_id' FROM modules;");
+                    var code = await conn.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),0)+1+100 AS 'max_id' FROM modules;");
                     var param = new
                     {
                         model.name,
@@ -92,7 +92,7 @@ namespace LAP.EntityFrameworkCore.Application
                         model.created_by,
                         created_time = DateTime.Now
                     };
-                    await DapperHelper.ExecuteAsync(sql, param);
+                    await conn.ExecuteAsync(sql, param);
                     transaction.Commit();
                     return true;
                 }

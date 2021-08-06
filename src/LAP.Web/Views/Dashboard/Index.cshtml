@@ -2,121 +2,216 @@
     ViewData["Title"] = "仪表盘";
 }
 
-<div id="dashboardApp">
+<div id="dashboardApp" style="margin-bottom: 20px;">
     <el-card class="box-card">
-        <el-container>
-            <el-header>
-                <el-form ref="searchForm" :inline="true" :model="searchForm">
-                    <el-row>
-                        <el-col :span="10">
-                            <el-select v-model="searchForm.moduleCodeValue" filterable clearable placeholder="模块">
-                                <el-option v-for="item in modules" :key="item.value" :label="item.text" :value="item.value">
-                                </el-option>
-                            </el-select>
-                            <el-date-picker v-model="searchForm.startAndEndDate"
-                                            type="datetimerange"
-                                            :picker-options="pickerOptions"
-                                            range-separator="至"
-                                            start-placeholder="开始日期"
-                                            end-placeholder="结束日期"
-                                            format="yyyy-MM-dd HH:mm:ss"
-                                            value-format="yyyy-MM-dd HH:mm:ss"
-                                            align="right">
-                            </el-date-picker>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-button type="primary" v-on:click="search" size="medium" icon="el-icon-search">查询</el-button>
-                            <el-button type="primary" v-on:click="reset" size="medium" icon="el-icon-refresh">重置</el-button>
-                            <el-divider direction="vertical"></el-divider>
-                            <el-switch v-model="searchForm.isAuto" v-on:change="isAutoChange" inactive-text="自动">
-                            </el-switch>
-                            &nbsp;<el-input-number style="width:100px;" v-model="searchForm.num" controls-position="right" size="mini" :min="6" :max="60"></el-input-number>
-                        </el-col>
-                    </el-row>
-                </el-form>
-            </el-header>
-        </el-container>
+        <el-main>
+            <el-row :gutter="20">
+                <el-col :span="6">
+                    <el-card shadow="always" style="color: #67c23a; background-color: #f0f9eb;  ">
+                        <el-button type="success" icon="el-icon-s-promotion" style="vertical-align: middle;" circle></el-button>
+                        &nbsp;&nbsp;&nbsp;
+                        <div style="padding: 1px; display: inline-block; vertical-align: middle;">
+                            <span>{{ statisticForm.requestNum }}</span><br />请求次数
+                        </div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                    <el-card shadow="always" style="color: #f56c6c; background-color: #fef0f0;">
+                        <el-button type="danger" icon="el-icon-close" style="vertical-align: middle;" circle></el-button>
+                        &nbsp;&nbsp;&nbsp;
+                        <div style="padding: 1px; display: inline-block; vertical-align: middle;">
+                            <span>{{ statisticForm.logNum }}</span><br />日志数量
+                        </div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                    <el-card shadow="always" style="color: #e6a23c; background-color: #fdf6ec; ">
+                        <el-button type="warning" icon="el-icon-bell" style="vertical-align: middle;" circle></el-button>
+                        &nbsp;&nbsp;&nbsp;
+                        <div style="padding: 1px; display: inline-block; vertical-align: middle;">
+                            <span>{{ statisticForm.monitorNum }}</span><br />监控数量
+                        </div>
+                    </el-card>
+                </el-col>
+                <el-col :span="6">
+                    <el-card shadow="always" style="color: #909399; background-color: #f4f4f5; ">
+                        <el-button type="info" icon="el-icon-star-off" style="vertical-align: middle;" circle></el-button>
+                        &nbsp;&nbsp;&nbsp;
+                        <div style="padding: 1px; display: inline-block; vertical-align: middle;">
+                            <span>{{ statisticForm.moduleNum }}</span><br />模块数量
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </el-main>
     </el-card>
 </div>
+<el-card class="box-card">
+    <el-row>
+        <div id="logChart" style="width: 49%; height: 650px; float: left; margin-right: 30px;  "></div>
+        <div id="statisticLogChart" style="width: 49%; height: 650px; float: left;  "></div>
+    </el-row>
+</el-card>
 
 @section Scripts {
+    <script src="/js/echarts-5.1.2/echarts.min.js"></script>
     <script>
         new Vue({
             el: "#dashboardApp",
             data() {
                 return {
-                    searchForm: {
-                        moduleCodeValue: null,
-                        startAndEndDate: null,
-                        isAuto: null,
-                        num: 6
-                    },
-                    modules: [],
-                    timer: null,
-                    pickerOptions: {
-                        shortcuts: [
-                            {
-                                text: '最近一周',
-                                onClick(picker) {
-                                    const end = new Date();
-                                    const start = new Date();
-                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                                    picker.$emit('pick', [start, end]);
-                                }
-                            }, {
-                                text: '最近一个月',
-                                onClick(picker) {
-                                    const end = new Date();
-                                    const start = new Date();
-                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                                    picker.$emit('pick', [start, end]);
-                                }
-                            }, {
-                                text: '最近三个月',
-                                onClick(picker) {
-                                    const end = new Date();
-                                    const start = new Date();
-                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                                    picker.$emit('pick', [start, end]);
-                                }
-                            }
-                        ]
+                    statisticForm: {
+                        requestNum: 0,
+                        logNum: 0,
+                        monitorNum: 0,
+                        moduleNum: 0,
                     },
                 }
             },
             methods: {
-                search() {
+                getStatistics() {
                     var self = this;
-                    var options = {
-                        moduleCode: self.searchForm.moduleCodeValue,
-                        startDate: self.searchForm.startAndEndDate != null ? self.searchForm.startAndEndDate[0] : null,
-                        endDate: self.searchForm.startAndEndDate != null ? self.searchForm.startAndEndDate[1] : null,
-                    };
-                    console.log(options);
-                },
-                reset() {
-                    var form = this.searchForm;
-                    Object.keys(form).forEach(key => (form[key] = null));
-                },
-                isAutoChange(v) {
-                    if (v) {
-                        this.timer = setInterval(() => {
-
-                        }, 1000);
-                    } else {
-                        clearInterval(this.timer);
-                        this.timer = null;
-                    }
-                },
-                getModule() {
-                    var self = this;
-                    $.get("/Module/GetMoudleList", function (res) {
-                        self.modules = res;
+                    $.get("/Dashboard/GetStatistics", function (res) {
+                        self.statisticForm = res;
                     });
+                },
+                getLogChart() {
+                    var myChart = echarts.init(document.getElementById('logChart'));
+                    var option = {
+                        title: {
+                            text: '折线图堆叠'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                name: '邮件营销',
+                                type: 'line',
+                                stack: '总量',
+                                data: [120, 132, 101, 134, 90, 230, 210]
+                            },
+                            {
+                                name: '联盟广告',
+                                type: 'line',
+                                stack: '总量',
+                                data: [220, 182, 191, 234, 290, 330, 310]
+                            },
+                            {
+                                name: '视频广告',
+                                type: 'line',
+                                stack: '总量',
+                                data: [150, 232, 201, 154, 190, 330, 410]
+                            },
+                            {
+                                name: '直接访问',
+                                type: 'line',
+                                stack: '总量',
+                                data: [320, 332, 301, 334, 390, 330, 320]
+                            },
+                            {
+                                name: '搜索引擎',
+                                type: 'line',
+                                stack: '总量',
+                                data: [820, 932, 901, 934, 1290, 1330, 1320]
+                            },
+                        ]
+                    };
+                    myChart.setOption(option);
+                },
+                getStatisticLogChart() {
+                    var myChart = echarts.init(document.getElementById('statisticLogChart'));
+                    var option = {
+                        title: {
+                            text: '折线图堆叠'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                name: '邮件营销',
+                                type: 'line',
+                                stack: '总量',
+                                data: [120, 132, 101, 134, 90, 230, 210]
+                            },
+                            {
+                                name: '联盟广告',
+                                type: 'line',
+                                stack: '总量',
+                                data: [220, 182, 191, 234, 290, 330, 310]
+                            },
+                            {
+                                name: '视频广告',
+                                type: 'line',
+                                stack: '总量',
+                                data: [150, 232, 201, 154, 190, 330, 410]
+                            },
+                            {
+                                name: '直接访问',
+                                type: 'line',
+                                stack: '总量',
+                                data: [320, 332, 301, 334, 390, 330, 320]
+                            },
+                            {
+                                name: '搜索引擎',
+                                type: 'line',
+                                stack: '总量',
+                                data: [820, 932, 901, 934, 1290, 1330, 1320]
+                            },
+                        ]
+                    };
+                    myChart.setOption(option);
                 }
             },
             created() {
-                this.getModule();
+                this.getStatistics();
+                this.getLogChart();
+                this.getStatisticLogChart();
             }
         });
     </script>
