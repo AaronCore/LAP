@@ -95,50 +95,18 @@ new Vue({
                     icon: 'el-icon-s-tools',
                 },
                 {
-                    key: 'logManage',
-                    title: '日志分析',
+                    key: 'loggerList',
+                    title: '日志列表',
                     show: true,
-                    url: '#',
+                    url: '/Logger/Index',
                     icon: 'el-icon-s-management',
-                    children: [
-                        {
-                            key: 'logAnalysis',
-                            title: '日志分析',
-                            show: true,
-                            url: '/Logger/Analysis',
-                            icon: 'el-icon-s-marketing',
-                        },
-                        {
-                            key: 'loggerList',
-                            title: '日志管理',
-                            show: true,
-                            url: '/Logger/Index',
-                            icon: 'el-icon-menu',
-                        }
-                    ]
                 },
                 {
-                    key: 'statisticLogManage',
-                    title: '统计分析',
+                    key: 'statisticLogList',
+                    title: '请求日志',
                     show: true,
-                    url: '#',
+                    url: '/StatisticLog/Index',
                     icon: 'el-icon-s-data',
-                    children: [
-                        {
-                            key: 'statisticLogAnalysis',
-                            title: '统计分析',
-                            show: true,
-                            url: '/StatisticLog/Analysis',
-                            icon: 'el-icon-s-marketing',
-                        },
-                        {
-                            key: 'statisticLogList',
-                            title: '请求日志',
-                            show: true,
-                            url: '/StatisticLog/Index',
-                            icon: 'el-icon-menu',
-                        }
-                    ]
                 },
                 {
                     key: 'warningManage',

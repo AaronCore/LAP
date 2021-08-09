@@ -49,7 +49,7 @@ namespace LAP.EntityFrameworkCore.Application
             }
         }
 
-        public async Task<LogChartDto> LogChart()
+        public async Task<LogChartDto> LogChart(string startDate, string endDate)
         {
             using var conn = DapperHelper.Connection();
             {
@@ -74,8 +74,32 @@ namespace LAP.EntityFrameworkCore.Application
                         var array = new List<int>();
                         foreach (var logLevel in logLevelList)
                         {
-                            var sql = "SELECT COUNT(id) AS 'rows' FROM `logs` WHERE module_code=@module_code AND `level`=@level;";
-                            int rows = await conn.ExecuteScalarAsync<int>(sql, new { module_code = item.code, level = logLevel.ToInt32() });
+                            var parameters = new DynamicParameters();
+                            parameters.Add("@module_code", item.code);
+                            parameters.Add("@level", logLevel.ToInt32());
+
+                            var sql = "SELECT COUNT(id) AS 'rows' FROM `logs` WHERE module_code=@module_code AND `level`=@level";
+                            if (!string.IsNullOrWhiteSpace(startDate))
+                            {
+                                sql += " AND DATE(log_create_time)>=@startDate";
+                                parameters.Add("@startDate", startDate);
+                            }
+                            if (!string.IsNullOrWhiteSpace(endDate))
+                            {
+                                sql += " AND DATE(log_create_time)<=@endDate";
+                                parameters.Add("@endDate", endDate);
+                            }
+                            if (DateTime.Compare(Convert.ToDateTime(startDate), Convert.ToDateTime(endDate)) == 0)
+                            {
+                                sql += " AND DATE(log_create_time)=@startDate";
+                                parameters.Add("@startDate", startDate);
+                            }
+                            if (string.IsNullOrWhiteSpace(startDate) && string.IsNullOrWhiteSpace(endDate))
+                            {
+                                sql += " AND DATE(log_create_time)=@startDate";
+                                parameters.Add("@startDate", DateTime.Now.ToString("yyyy-MM-dd"));
+                            }
+                            int rows = await conn.ExecuteScalarAsync<int>(sql, parameters);
                             array.Add(rows);
                         }
                         dto.data = array.ToArray();
@@ -99,7 +123,7 @@ namespace LAP.EntityFrameworkCore.Application
             }
         }
 
-        public async Task<StatisticLogChartDto> StatisticLogChart()
+        public async Task<StatisticLogChartDto> StatisticLogChart(string startDate, string endDate)
         {
             using var conn = DapperHelper.Connection();
             {
@@ -121,7 +145,33 @@ namespace LAP.EntityFrameworkCore.Application
                         {
                             name = item.name
                         };
-                        model.value = await conn.ExecuteScalarAsync<int>("SELECT COUNT(id) AS 'rows' FROM statistic_logs WHERE module_code=@module_code;", new { module_code = item.code });
+
+                        var parameters = new DynamicParameters();
+                        parameters.Add("@module_code", item.code);
+
+                        var sql = "SELECT COUNT(id) AS 'rows' FROM statistic_logs WHERE module_code=@module_code";
+                        if (!string.IsNullOrWhiteSpace(startDate))
+                        {
+                            sql += " AND DATE(request_time)>=@startDate";
+                            parameters.Add("@startDate", startDate);
+                        }
+                        if (!string.IsNullOrWhiteSpace(endDate))
+                        {
+                            sql += " AND DATE(request_time)<=@endDate";
+                            parameters.Add("@endDate", endDate);
+                        }
+                        if (DateTime.Compare(Convert.ToDateTime(startDate), Convert.ToDateTime(endDate)) == 0)
+                        {
+                            sql += " AND DATE(request_time)=@startDate";
+                            parameters.Add("@startDate", startDate);
+                        }
+                        if (string.IsNullOrWhiteSpace(startDate) && string.IsNullOrWhiteSpace(endDate))
+                        {
+                            sql += " AND DATE(request_time)=@startDate";
+                            parameters.Add("@startDate", DateTime.Now.ToString("yyyy-MM-dd"));
+                        }
+
+                        model.value = await conn.ExecuteScalarAsync<int>(sql, parameters);
 
                         if (serieTag.Contains(item.code))
                         {

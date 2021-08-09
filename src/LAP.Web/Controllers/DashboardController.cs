@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using LAP.EntityFrameworkCore.Application;
 using LAP.Web.Filters;
@@ -26,16 +23,16 @@ namespace LAP.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetLogChart()
+        public async Task<IActionResult> GetLogChart(string startDate, string endDate)
         {
-            var model = await DashboardService.LogChart();
+            var model = await DashboardService.LogChart(startDate, endDate);
             return Json(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStatisticLogChart()
+        public async Task<IActionResult> GetStatisticLogChart(string startDate, string endDate)
         {
-            var model = await DashboardService.StatisticLogChart();
+            var model = await DashboardService.StatisticLogChart(startDate, endDate);
             return Json(model);
         }
     }

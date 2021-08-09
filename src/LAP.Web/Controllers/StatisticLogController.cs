@@ -24,11 +24,6 @@ namespace LAP.Web.Controllers
             return View();
         }
 
-        public IActionResult Analysis()
-        {
-            return View();
-        }
-
         /// <summary>
         /// 分页查询
         /// </summary>

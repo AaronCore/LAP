@@ -4,10 +4,36 @@
 
 <div id="dashboardApp" style="margin-bottom: 20px;">
     <el-card class="box-card">
+        <el-header>
+            <el-form ref="searchForm" :inline="true" :model="searchForm">
+                <el-row>
+                    <el-col :span="6">
+                        <el-date-picker v-model="searchForm.startAndEndDate"
+                                        type="datetimerange"
+                                        :picker-options="pickerOptions"
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        format="yyyy-MM-dd HH:mm:ss"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        align="right">
+                        </el-date-picker>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-button type="primary" v-on:click="search" size="medium" icon="el-icon-search">查询</el-button>
+                        <el-button type="primary" v-on:click="reset" size="medium" icon="el-icon-refresh">重置</el-button>
+                        <el-divider direction="vertical"></el-divider>
+                        <el-switch v-model="searchForm.isAuto" v-on:change="isAutoChange" inactive-text="自动">
+                        </el-switch>
+                        &nbsp;<el-input-number style="width:100px;" v-model="searchForm.num" controls-position="right" size="mini" :min="6" :max="60"></el-input-number>
+                    </el-col>
+                </el-row>
+            </el-form>
+        </el-header>
         <el-main>
             <el-row :gutter="20">
                 <el-col :span="6">
-                    <el-card shadow="always" style="color: #67c23a; background-color: #f0f9eb;  ">
+                    <el-card shadow="always" style="color: #67c23a; background-color: #f0f9eb;">
                         <el-button type="success" icon="el-icon-s-promotion" style="vertical-align: middle;" circle></el-button>
                         &nbsp;&nbsp;&nbsp;
                         <div style="padding: 1px; display: inline-block; vertical-align: middle;">
@@ -25,7 +51,7 @@
                     </el-card>
                 </el-col>
                 <el-col :span="6">
-                    <el-card shadow="always" style="color: #e6a23c; background-color: #fdf6ec; ">
+                    <el-card shadow="always" style="color: #e6a23c; background-color: #fdf6ec;">
                         <el-button type="warning" icon="el-icon-bell" style="vertical-align: middle;" circle></el-button>
                         &nbsp;&nbsp;&nbsp;
                         <div style="padding: 1px; display: inline-block; vertical-align: middle;">
@@ -34,7 +60,7 @@
                     </el-card>
                 </el-col>
                 <el-col :span="6">
-                    <el-card shadow="always" style="color: #909399; background-color: #f4f4f5; ">
+                    <el-card shadow="always" style="color: #909399; background-color: #f4f4f5;">
                         <el-button type="info" icon="el-icon-star-off" style="vertical-align: middle;" circle></el-button>
                         &nbsp;&nbsp;&nbsp;
                         <div style="padding: 1px; display: inline-block; vertical-align: middle;">
@@ -60,15 +86,75 @@
             el: "#dashboardApp",
             data() {
                 return {
+                    searchForm: {
+                        startAndEndDate: null,
+                        isAuto: null,
+                        num: 6
+                    },
                     statisticForm: {
                         requestNum: 0,
                         logNum: 0,
                         monitorNum: 0,
                         moduleNum: 0,
                     },
+                    timer: null,
+                    pickerOptions: {
+                        shortcuts: [
+                            {
+                                text: '最近一周',
+                                onClick(picker) {
+                                    const end = new Date();
+                                    const start = new Date();
+                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                                    picker.$emit('pick', [start, end]);
+                                }
+                            }, {
+                                text: '最近一个月',
+                                onClick(picker) {
+                                    const end = new Date();
+                                    const start = new Date();
+                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                    picker.$emit('pick', [start, end]);
+                                }
+                            }, {
+                                text: '最近三个月',
+                                onClick(picker) {
+                                    const end = new Date();
+                                    const start = new Date();
+                                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                                    picker.$emit('pick', [start, end]);
+                                }
+                            }
+                        ]
+                    },
                 }
             },
             methods: {
+                search() {
+                    this.getLogChart();
+                    this.getStatisticLogChart();
+                },
+                reset() {
+                    var form = this.searchForm;
+                    Object.keys(form).forEach(key => (form[key] = null));
+
+                    this.getLogChart();
+                    this.getStatisticLogChart();
+                },
+                isAutoChange(v) {
+                    var self = this;
+                    var ss = self.searchForm.num * 1000;
+                    console.log(ss);
+                    if (v) {
+                        this.timer = setInterval(() => {
+                            self.getLogChart();
+                            self.getStatisticLogChart();
+                        }, ss);
+                    } else {
+                        clearInterval(this.timer);
+                        this.timer = null;
+                    }
+                },
                 getStatistics() {
                     var self = this;
                     $.get("/Dashboard/GetStatistics",
@@ -77,14 +163,15 @@
                         });
                 },
                 getLogChart() {
+                    var startDate = this.searchForm.startAndEndDate != null ? this.searchForm.startAndEndDate[0] : "";
+                    var endDate = this.searchForm.startAndEndDate != null ? this.searchForm.startAndEndDate[1] : "";
                     var resData = null;
                     $.ajax({
                         type: "get",
-                        url: "/Dashboard/GetLogChart",
+                        url: "/Dashboard/GetLogChart?startDate=" + startDate + "&endDate=" + endDate,
                         data: null,
                         async: false,
                         success: function (res) {
-                            console.log(res);
                             resData = res;
                         }
                     });
@@ -128,10 +215,12 @@
                     myChart.setOption(option);
                 },
                 getStatisticLogChart() {
+                    var startDate = this.searchForm.startAndEndDate != null ? this.searchForm.startAndEndDate[0] : "";
+                    var endDate = this.searchForm.startAndEndDate != null ? this.searchForm.startAndEndDate[1] : "";
                     var resData = null;
                     $.ajax({
                         type: "get",
-                        url: "/Dashboard/GetStatisticLogChart",
+                        url: "/Dashboard/GetStatisticLogChart?startDate=" + startDate + "&endDate=" + endDate,
                         data: null,
                         async: false,
                         success: function (res) {

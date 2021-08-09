@@ -74,9 +74,9 @@ namespace LAP.HttpClient.Test
                     .RuleFor(x => x.method, z => z.PickRandom<Method>())
                     .RuleFor(x => x.exception, z => z.Lorem.Sentence())
                     .RuleFor(x => x.message, z => z.Lorem.Word())
-                    .RuleFor(x => x.date, z => z.Date.Recent())
-                    //.RuleFor(x => x.date, z => z.Date.Soon())
-                    //.RuleFor(x => x.date, z => z.Date.Between(Convert.ToDateTime("2021-01-01"), Convert.ToDateTime("2021-08-04")))
+                    //.RuleFor(x => x.date, z => z.Date.Recent())
+                    .RuleFor(x => x.date, z => z.Date.Soon())
+                    //.RuleFor(x => x.date, z => z.Date.Between(Convert.ToDateTime("2021-08-09 00:00:00"), Convert.ToDateTime("2021-08-09 23:59:59")))
                     .Generate();
             return log;
         }
