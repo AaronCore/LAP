@@ -104,6 +104,7 @@ namespace LAP.EntityFrameworkCore.Application
                 finally
                 {
                     transaction.Dispose();
+                    conn.Dispose();
                 }
             }
         }

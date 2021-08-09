@@ -65,7 +65,6 @@ namespace LAP.Web.Controllers
             return Json(obj);
         }
 
-
         /// <summary>
         /// 获取日志信息
         /// </summary>

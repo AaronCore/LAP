@@ -24,5 +24,19 @@ namespace LAP.Web.Controllers
             var model = await DashboardService.Statistics();
             return Json(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLogChart()
+        {
+            var model = await DashboardService.LogChart();
+            return Json(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStatisticLogChart()
+        {
+            var model = await DashboardService.StatisticLogChart();
+            return Json(model);
+        }
     }
 }

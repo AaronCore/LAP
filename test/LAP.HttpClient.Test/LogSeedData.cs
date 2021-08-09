@@ -60,7 +60,7 @@ namespace LAP.HttpClient.Test
             }
         }
 
-        private static readonly int[] MoudleCode = { 102, 103, 104, 105, 106, 107, 107, 109 };
+        private static readonly int[] MoudleCode = { 101, 102, 103, 104, 105, 106, 107, 107, 109 };
         private static Log CreateLogData()
         {
             var log = new Faker<Log>()
@@ -74,8 +74,8 @@ namespace LAP.HttpClient.Test
                     .RuleFor(x => x.method, z => z.PickRandom<Method>())
                     .RuleFor(x => x.exception, z => z.Lorem.Sentence())
                     .RuleFor(x => x.message, z => z.Lorem.Word())
-                    //.RuleFor(x => x.date, z => z.Date.Soon())
                     .RuleFor(x => x.date, z => z.Date.Recent())
+                    //.RuleFor(x => x.date, z => z.Date.Soon())
                     //.RuleFor(x => x.date, z => z.Date.Between(Convert.ToDateTime("2021-01-01"), Convert.ToDateTime("2021-08-04")))
                     .Generate();
             return log;
