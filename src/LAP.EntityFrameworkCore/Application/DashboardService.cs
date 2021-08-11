@@ -110,7 +110,7 @@ namespace LAP.EntityFrameworkCore.Application
                     transaction.Commit();
                     return chartDto;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
                     return null;

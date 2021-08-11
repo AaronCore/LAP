@@ -19,7 +19,7 @@ namespace LAP.HttpClient.Test
         /// <returns></returns>
         public static async Task AddLog()
         {
-            for (int i = 1; i <= 500; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 Thread.Sleep(1000);
 

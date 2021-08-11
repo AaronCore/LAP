@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LAP.Client.Extensions;
+using LAP.Common;
 using LAP.EntityFrameworkCore.Application;
+using LAP.EntityFrameworkCore.Enum;
 using LAP.EntityFrameworkCore.ViewModel;
 
 namespace LAP.Client.Controllers
@@ -28,7 +31,15 @@ namespace LAP.Client.Controllers
                 return NotFound();
             }
 
-            await LogService.InsterLog(dto);
+            try
+            {
+                await LogService.InsterLog(dto);
+            }
+            catch (Exception)
+            {
+                // 故障转移
+                await SendMessage.Send(MessageType.日志, dto.ToJson());
+            }
 
             return Ok();
         }

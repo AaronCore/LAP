@@ -27,6 +27,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAP.HttpClientCore", "..\cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAP.HttpClientCore.Test", "..\test\LAP.HttpClientCore.Test\LAP.HttpClientCore.Test.csproj", "{5E7BC599-9330-42C8-9187-BC29DF76C2F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.Server", "LAP.Server\LAP.Server.csproj", "{5E5E89FE-D958-4FC1-9070-BA7B2036A2FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.RabbitMQ", "LAP.RabbitMQ\LAP.RabbitMQ.csproj", "{EBCC7E23-A530-4C0B-B873-E2DB720886F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{5E7BC599-9330-42C8-9187-BC29DF76C2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E7BC599-9330-42C8-9187-BC29DF76C2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E7BC599-9330-42C8-9187-BC29DF76C2F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E5E89FE-D958-4FC1-9070-BA7B2036A2FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E5E89FE-D958-4FC1-9070-BA7B2036A2FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E5E89FE-D958-4FC1-9070-BA7B2036A2FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E5E89FE-D958-4FC1-9070-BA7B2036A2FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBCC7E23-A530-4C0B-B873-E2DB720886F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBCC7E23-A530-4C0B-B873-E2DB720886F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBCC7E23-A530-4C0B-B873-E2DB720886F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBCC7E23-A530-4C0B-B873-E2DB720886F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
