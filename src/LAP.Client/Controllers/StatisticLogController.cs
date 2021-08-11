@@ -38,7 +38,7 @@ namespace LAP.Client.Controllers
             catch (Exception)
             {
                 // 故障转移
-                await SendMessage.Send(MessageType.请求日志, dto.ToJson());
+                await SendMessage.Send(MqMessageType.请求日志, dto.ToJson());
             }
 
             return Ok();

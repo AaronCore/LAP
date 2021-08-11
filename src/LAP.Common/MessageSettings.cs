@@ -2,7 +2,7 @@
 {
     public class MessageSettings
     {
-        public static class RabbitMQSetting
+        public static class RabbitMqSetting
         {
             public static string ExchangeName => "lap.log";
             public static string RabbitQueueName => "lap_log";

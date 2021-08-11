@@ -2,9 +2,9 @@
 
 namespace LAP.EntityFrameworkCore.Model
 {
-    public class MessageModel
+    public class MqMessageModel
     {
-        public MessageType type { get; set; }
+        public MqMessageType type { get; set; }
         public string message { get; set; }
     }
 }
