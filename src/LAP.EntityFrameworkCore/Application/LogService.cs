@@ -19,7 +19,7 @@ namespace LAP.EntityFrameworkCore.Application
         /// </summary>
         /// <param name="input">Log模型</param>
         /// <returns></returns>
-        public async Task<bool> InsterLog(LogInputDto input)
+        public async Task<bool> Inster(LogInputDto input)
         {
             const string sql = @"INSERT INTO `logs` (`module_code`, `level`, `request_path`, `request_url`, `request_form`, `method`, `exception`, `message`, `ip_address`, `remark`, `log_create_time`, `created_time` )
                                  VALUES (@module_code, @level, @request_path, @request_url, @request_form , @method, @exception, @message, @ip_address, @remark , @log_create_time, @created_time);";

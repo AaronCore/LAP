@@ -33,7 +33,7 @@ namespace LAP.Client.Controllers
 
             try
             {
-                await StatisticLogService.InsterStatisticLog(dto);
+                await StatisticLogService.Inster(dto);
             }
             catch (Exception)
             {

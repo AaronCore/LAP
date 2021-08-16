@@ -40,7 +40,7 @@ namespace LAP.Web.MiddlerWare
                     request_url = (context.Request.Path + context.Request.QueryString).ToLower(),
                     request_time = DateTime.Now
                 };
-                await StatisticLogService.InsterStatisticLog(requestModel);
+                await StatisticLogService.Inster(requestModel);
             }
 
             // Call the next delegate/middleware in the pipeline

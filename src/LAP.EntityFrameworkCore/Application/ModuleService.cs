@@ -74,7 +74,7 @@ namespace LAP.EntityFrameworkCore.Application
         /// </summary>
         /// <param name="model">Module模型</param>
         /// <returns></returns>
-        public async Task<bool> InsterModule(ModuleEntity model)
+        public async Task<bool> Inster(ModuleEntity model)
         {
             using var conn = DapperHelper.Connection();
             {
@@ -115,7 +115,7 @@ namespace LAP.EntityFrameworkCore.Application
         /// <param name="id">主键id</param>
         /// <param name="name">模块名称</param>
         /// <returns></returns>
-        public async Task<bool> UpdateModule(int id, string name)
+        public async Task<bool> Update(int id, string name)
         {
             const string sql = @"UPDATE `modules` SET `name` = @name WHERE `id` = @id;";
             return await DapperHelper.ExecuteAsync(sql, new { id, name });
@@ -126,7 +126,7 @@ namespace LAP.EntityFrameworkCore.Application
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
-        public async Task<bool> DeleteModule(int id)
+        public async Task<bool> Delete(int id)
         {
             const string sql = @"DELETE FROM `modules` WHERE `id` = @id;";
             return await DapperHelper.ExecuteAsync(sql, new { id });

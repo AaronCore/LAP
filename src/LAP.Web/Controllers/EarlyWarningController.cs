@@ -5,15 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using LAP.EntityFrameworkCore.Application;
 using LAP.EntityFrameworkCore.Entity;
-using LAP.EntityFrameworkCore.ViewModel;
-using LAP.Web.Filters;
 
 namespace LAP.Web.Controllers
 {
-    [ExceptionFilter]
-    public class ModuleController : Controller
+    public class EarlyWarningController : Controller
     {
-        private static readonly ModuleService ModuleService = new();
+        private static readonly EarlyWarningService EarlyWarningService = new();
 
         public IActionResult Index()
         {
@@ -30,7 +27,7 @@ namespace LAP.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Load(int pageIndex, int pageSize, string searchKey = null)
         {
-            var query = await ModuleService.PageQuery(pageIndex, pageSize, searchKey);
+            var query = await EarlyWarningService.PageQuery(pageIndex, pageSize, searchKey);
             var obj = new
             {
                 pageIndex,
@@ -40,7 +37,12 @@ namespace LAP.Web.Controllers
                 {
                     p.id,
                     p.name,
-                    p.code,
+                    p.host,
+                    p.notice_way,
+                    p.email,
+                    p.mobile,
+                    p.principal,
+                    p.status,
                     created_time = p.created_time.ToString("yyyy-MM-dd HH:mm:ss")
                 }).ToList()
             };
@@ -50,27 +52,21 @@ namespace LAP.Web.Controllers
         /// <summary>
         /// 添加/修改
         /// </summary>
-        /// <param name="model">模块实体</param>
+        /// <param name="model">实体</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Submit(ModuleEntity model)
+        public async Task<IActionResult> Submit(EarlyWarningEntity model)
         {
-            if (await ModuleService.VerifyName(model.id, model.name))
-            {
-                return Json(-1);
-            }
-
             if (model.id > 0)
             {
-                if (!await ModuleService.Update(model.id, model.name))
+                if (!await EarlyWarningService.Update(model))
                 {
                     return Json(0);
                 }
             }
             else
             {
-                model.created_by = "admin";
-                if (!await ModuleService.Inster(model))
+                if (!await EarlyWarningService.Inster(model))
                 {
                     return Json(0);
                 }
@@ -79,30 +75,14 @@ namespace LAP.Web.Controllers
         }
 
         /// <summary>
-        /// 获取模块列表
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> GetMoudleList()
-        {
-            var modules = await ModuleService.GetList();
-            var result = modules.OrderBy(p => p.name).Select(p => new
-            {
-                text = p.name,
-                value = p.code
-            });
-            return Json(result);
-        }
-
-        /// <summary>
-        /// 获取模块信息
+        /// 获取信息
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetModule(int id)
+        public async Task<IActionResult> GetEarlyWarning(int id)
         {
-            var model = await ModuleService.Find(id);
+            var model = await EarlyWarningService.Find(id);
             return Json(model);
         }
 
@@ -117,7 +97,7 @@ namespace LAP.Web.Controllers
             foreach (var id in ids)
             {
                 if (string.IsNullOrWhiteSpace(id)) continue;
-                await ModuleService.Delete(Convert.ToInt32(id));
+                await EarlyWarningService.Delete(Convert.ToInt32(id));
             }
             return Json(1);
         }

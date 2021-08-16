@@ -112,7 +112,7 @@ new Vue({
                     key: 'warningManage',
                     title: '预警管理',
                     show: true,
-                    url: '#',
+                    url: '/EarlyWarning/Index',
                     icon: 'el-icon-message-solid',
                 },
             ],

@@ -39,7 +39,7 @@ namespace LAP.Web.Filters
                 ip_address = context.HttpContext.Connection.RemoteIpAddress?.ToString(),
                 log_create_time = DateTime.Now,
             };
-            await LogService.InsterLog(errorModel);
+            await LogService.Inster(errorModel);
             context.ExceptionHandled = true;
             context.HttpContext.Response.StatusCode = 200;
             context.Result = new JsonResult(new { code = -999, message = context.Exception.Message });

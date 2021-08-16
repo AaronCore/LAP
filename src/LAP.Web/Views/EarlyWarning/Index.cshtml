@@ -1,0 +1,276 @@
+﻿@{
+    ViewData["Title"] = "预警管理";
+}
+
+<div id="earlyWarningApp">
+    <template>
+        <el-container>
+            <el-header style="margin-top:25px;">
+                <el-form ref="form" :inline="true" :model="searchForm">
+                    <el-row>
+                        <el-col :span="6">
+                            <el-form-item label="搜索：">
+                                <el-input style="width:300px;" size="medium" v-model="searchForm.searchValue" placeholder="请输入关键字"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-search">查询</el-button>
+                            <el-button type="success" size="medium" v-on:click="add" icon="el-icon-plus">添加</el-button>
+                            <el-button type="danger" size="medium" v-on:click="dels" icon="el-icon-delete">删除</el-button>
+                            <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-refresh">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-header>
+            <el-main>
+                <!--列表-->
+                <template>
+                    <el-table :data="tableData" border size="medium" style="width:100%" v-on:selection-change="selectionChange">
+                        <el-table-column type="selection" width="40">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="name" label="管理名称">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="host" label="主机地址">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="level" width="150" label="状态">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.level==0" type="success" size="small" effect="dark">成功</el-tag>
+                                <span v-v-else-if="scope.row.level==''"></span>
+                                <el-tag v-else type="danger" size="small" effect="dark">失败</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="created_time" label="创建时间" width="200">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" label="操作" width="200">
+                            <template slot-scope="scope">
+                                <el-button v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-row :gutter="20">
+                        <el-col :span="8" :offset="8">
+                            <el-pagination v-on:size-change="handleSizeChange"
+                                           v-on:current-change="handleCurrentChange"
+                                           :page-sizes="pageSizes"
+                                           :page-size="pageSize"
+                                           :current-page="1"
+                                           layout="total, sizes, prev, pager, next, jumper"
+                                           :total="total">
+                            </el-pagination>
+                        </el-col>
+                    </el-row>
+                </template>
+            </el-main>
+        </el-container>
+    </template>
+    <!--表单-->
+    <template>
+        <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="40%">
+            <el-form :model="earlyWarningForm" ref="earlyWarningForm" :rules="earlyWarningFormRules" label-position="right" label-width="100px">
+                <el-form-item prop="name" label="管理名称:" label-width="130px">
+                    <el-input v-model="earlyWarningForm.name" autocomplete="off" placeholder="请输入管理名称"></el-input>
+                </el-form-item>
+                <el-form-item prop="host" label="主机地址:" label-width="130px">
+                    <el-input v-model="earlyWarningForm.host" autocomplete="off" placeholder="请输入主机地址"></el-input>
+                </el-form-item>
+                <el-form-item prop="principal" label="管理人:" label-width="130px">
+                    <el-input v-model="earlyWarningForm.principal" autocomplete="off" placeholder="请输入管理人"></el-input>
+                </el-form-item>
+                <el-form-item prop="notice_way" label="通知方式:" label-width="130px">
+                    <el-select v-model="earlyWarningForm.notice_way" v-on:change="noticeWayChange" placeholder="请选择通知方式">
+                        <el-option v-for="item in noticeWays" :key="item.value" :label="item.text" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-if="isEmailShow" prop="email" label="邮箱:" label-width="130px">
+                    <el-input v-model="earlyWarningForm.email" autocomplete="off" placeholder="请输入邮箱,多个以,号拼接"></el-input>
+                </el-form-item>
+                <el-form-item v-if="isMobileShow" prop="mobile" label="手机:" label-width="130px">
+                    <el-input v-model="earlyWarningForm.mobile" autocomplete="off" placeholder="请输入手机号,多个以,号拼接"></el-input>
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="warning" v-on:click="resetForm()">重 置</el-button>
+                <el-button type="primary" v-on:click="submitForm('earlyWarningForm')">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
+</div>
+
+@section Scripts {
+    <script>
+        new Vue({
+            el: "#earlyWarningApp",
+            data() {
+                return {
+                    searchForm: {
+                        searchValue: null
+                    },
+                    dialogFormVisible: false,
+                    earlyWarningForm: {
+                        id: null,
+                        name: null,
+                        host: null,
+                        notice_way: null,
+                        email: null,
+                        mobile: null,
+                        principal: null,
+                    },
+                    earlyWarningFormRules: {
+                        name: [
+                            { required: true, message: '请输入管理名称', trigger: 'blur' }
+                        ],
+                        host: [
+                            { required: true, message: '请输入主机地址', trigger: 'blur' }
+                        ],
+                    },
+                    isEmailShow: false,
+                    isMobileShow: false,
+                    noticeWays: [
+                        { text: '邮件', value: 1 },
+                        { text: '短信', value: 2 },
+                    ],
+                    ids: null,
+                    tableData: null,
+                    // 分页
+                    pageSizes: [20, 30, 50, 100],
+                    pageSize: 20,
+                    pageIndex: 1,
+                    total: 0,
+                }
+            },
+            methods: {
+                noticeWayChange(v) {
+                    if (v == 1) {
+                        this.isEmailShow = true;
+                        this.isMobileShow = false;
+                    } else {
+                        this.isEmailShow = false;
+                        this.isMobileShow = true;
+                    }
+                },
+                // 查询
+                search() {
+                    this.pageReset();
+                    this.getTableData();
+                },
+                // 添加
+                add() {
+                    this.resetForm();
+                    this.dialogFormVisible = true;
+                },
+                // 批量删除
+                dels() {
+                    if (this.ids.length <= 0) {
+                        api.showMsg("请选择数据...", "warning");
+                        return false;
+                    }
+                    common.deletes(this, '/EarlyWarning/Deletes', { ids: this.ids });
+                },
+                // 重置
+                reset() {
+                    this.searchForm.searchValue = null;
+                    this.pageReset();
+                    this.getTableData();
+                },
+                // 编辑
+                edit(row) {
+                    var self = this;
+                    $.get("/EarlyWarning/GetEarlyWarning?id=" + row.id,
+                        function(res) {
+                            self.earlyWarningForm = res;
+                            if (res.notice_way === 1) {
+                                self.isEmailShow = true;
+                                self.isMobileShow = false;
+                            } else {
+                                self.isEmailShow = false;
+                                self.isMobileShow = true;
+                            }
+                            self.dialogFormVisible = true;
+                        });
+                },
+                // 提交
+                submitForm(formName) {
+                    var self = this;
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            $.post("/EarlyWarning/Submit",
+                                self.earlyWarningForm,
+                                function(res) {
+                                    if (res === 1) {
+                                        self.resetForm(); // 重置表单
+                                        api.showMsg("保存成功...", "success");
+                                        self.dialogFormVisible = false; // 关闭窗口
+                                        self.getTableData(); // 重新查询
+                                    } else if (res === -1) {
+                                        //api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
+                                        return false;
+                                    } else {
+                                        api.showMsg("保存失败...", "error");
+                                        return false;
+                                    }
+                                });
+                        } else {
+                            //api.showMsg("error submit...", "error");
+                            return false;
+                        }
+                    });
+                },
+                //获取列表
+                getTableData() {
+                    var self = this;
+                    var options = {
+                        pageIndex: self.pageIndex,
+                        pageSize: self.pageSize,
+                        searchKey: self.searchForm.searchValue
+                    };
+                    $.get("/EarlyWarning/Load",
+                        options,
+                        function(res) {
+                            self.tableData = res.data;
+                            self.pageIndex = res.pageIndex;
+                            self.pageSize = res.pageSize;
+                            self.total = res.total;
+                        });
+                },
+                // 表单重置
+                resetForm() {
+                    var form = this.earlyWarningForm;
+                    Object.keys(form).forEach(key => (form[key] = null));
+                },
+                // 获取选中行
+                selectionChange(rows) {
+                    var idArr = [];
+                    if (rows) {
+                        rows.forEach(row => {
+                            idArr.push(row.id);
+                        });
+                        this.ids = idArr;
+                    }
+                },
+                // 分页方法
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.getTableData();
+                },
+                handleCurrentChange(val) {
+                    this.pageIndex = val;
+                    this.getTableData();
+                },
+                // 分页重置
+                pageReset() {
+                    this.pageSize = 20;
+                    this.pageIndex = 1;
+                    this.total = 0;
+                }
+            },
+            created() {
+                this.getTableData();
+            }
+        });
+    </script>
+}
+

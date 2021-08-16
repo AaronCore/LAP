@@ -48,11 +48,11 @@ namespace LAP.Server
             {
                 case MqMessageType.日志:
                     var logModel = messageModel.message.ToObject<LogInputDto>();
-                    Task.Run(async () => await LogService.InsterLog(logModel));
+                    Task.Run(async () => await LogService.Inster(logModel));
                     break;
                 case MqMessageType.请求日志:
                     var statisticModel = messageModel.message.ToObject<StatisticLogInputDto>();
-                    Task.Run(async () => await StatisticLogService.InsterStatisticLog(statisticModel));
+                    Task.Run(async () => await StatisticLogService.Inster(statisticModel));
                     break;
             }
         }
