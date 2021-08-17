@@ -42,7 +42,7 @@ namespace LAP.Web.Controllers
                     p.email,
                     p.mobile,
                     p.principal,
-                    p.status,
+                    status = p.status ?? -1,
                     p.remark,
                     created_time = p.created_time.ToString("yyyy-MM-dd HH:mm:ss")
                 }).ToList()

@@ -60,7 +60,7 @@ namespace LAP.HttpClient.Test
             }
         }
 
-        private static readonly int[] MoudleCode = { 101, 102, 103, 104, 105, 106, 107, 107, 109 };
+        private static readonly int[] MoudleCode = { 101, 102, 103, 104, 105, 106, 107, 108, 109 };
         private static Log CreateLogData()
         {
             var log = new Faker<Log>()

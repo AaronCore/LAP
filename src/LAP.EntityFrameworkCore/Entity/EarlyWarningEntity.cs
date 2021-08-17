@@ -38,7 +38,7 @@ namespace LAP.EntityFrameworkCore.Entity
         /// <summary>
         /// 状态
         /// </summary>
-        public int status { get; set; }
+        public int? status { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
