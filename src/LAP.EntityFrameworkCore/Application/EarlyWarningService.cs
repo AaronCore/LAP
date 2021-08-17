@@ -29,7 +29,7 @@ namespace LAP.EntityFrameworkCore.Application
             parameters.Add("@pageIndex", pageIndex * pageSize);
             parameters.Add("@pageSize", pageSize);
 
-            var sql = @"SELECT `id`, `name`, `host`, `notice_way`, `email`, `mobile`, `principal`, `status`, `created_time` FROM `early_warning` WHERE 1=1 ";
+            var sql = @"SELECT `id`, `name`, `host`, `notice_way`, `email`, `mobile`, `principal`, `status`,`remark`, `created_time` FROM `early_warning` WHERE 1=1 ";
             if (!string.IsNullOrWhiteSpace(searchKey))
             {
                 sql += " AND name LIKE CONCAT('%',@searchKey,'%')";

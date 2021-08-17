@@ -47,7 +47,7 @@
                                 <span v-if="scope.row.notice_way==2">短信</span>
                             </template>
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="notice_way" label="联系方式">
+                        <el-table-column header-align="center" align="center" label="联系方式">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.notice_way==1">{{ scope.row.email }}</span>
                                 <span v-if="scope.row.notice_way==2">{{ scope.row.mobile }}</span>
