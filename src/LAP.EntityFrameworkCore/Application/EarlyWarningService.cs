@@ -50,18 +50,18 @@ namespace LAP.EntityFrameworkCore.Application
         /// <returns></returns>
         public async Task<IEnumerable<EarlyWarningEntity>> GetList()
         {
-            const string sql = @"SELECT `id`, `name`, `host`, `notice_way`, `email`, `mobile`, `principal`, `status`, `created_time` FROM `early_warning`;";
+            const string sql = @"SELECT `id`, `name`, `host`, `notice_way`, `email`, `mobile`, `principal`, `status`, `remark`, `created_time` FROM `early_warning`;";
             return await DapperHelper.QueryAsync<EarlyWarningEntity>(sql);
         }
 
         /// <summary>
-        /// 获取模块
+        /// 获取
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
         public async Task<EarlyWarningEntity> Find(int id)
         {
-            const string sql = @"SELECT `id`, `name`, `host`, `notice_way`, `email`, `mobile`, `principal`, `status`, `created_time` FROM `early_warning` WHERE id=@id;";
+            const string sql = @"SELECT `id`, `name`, `host`, `notice_way`, `email`, `mobile`, `principal`, `status`, `remark`, `created_time` FROM `early_warning` WHERE id=@id;";
             return await DapperHelper.QueryFirstAsync<EarlyWarningEntity>(sql, new { id });
         }
 
@@ -82,13 +82,14 @@ namespace LAP.EntityFrameworkCore.Application
                 model.email,
                 model.mobile,
                 model.principal,
+                model.status,
                 created_time = DateTime.Now
             };
             return await DapperHelper.ExecuteAsync(sql, param);
         }
 
         /// <summary>
-        /// 修改模块
+        /// 修改
         /// </summary>
         /// <param name="model">实体</param>
         /// <returns></returns>
@@ -104,6 +105,25 @@ namespace LAP.EntityFrameworkCore.Application
                 model.email,
                 model.mobile,
                 model.principal
+            };
+            return await DapperHelper.ExecuteAsync(sql, param);
+        }
+
+        /// <summary>
+        /// 修改状态、描述
+        /// </summary>
+        /// <param name="id">主键</param>
+        /// <param name="status">状态</param>
+        /// <param name="remark">备注</param>
+        /// <returns></returns>
+        public async Task<bool> UpdateStatusAndRemark(int id, int status, string remark)
+        {
+            const string sql = @"UPDATE `early_warning` SET `status` =@status,`remark` =@remark WHERE `id` =@id;";
+            var param = new
+            {
+                id,
+                status,
+                remark
             };
             return await DapperHelper.ExecuteAsync(sql, param);
         }

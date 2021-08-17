@@ -34,12 +34,26 @@
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="host" label="主机地址">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="level" width="150" label="状态">
+                        <el-table-column header-align="center" align="center" prop="status" width="120" label="状态">
                             <template slot-scope="scope">
-                                <el-tag v-if="scope.row.level==0" type="success" size="small" effect="dark">成功</el-tag>
-                                <span v-v-else-if="scope.row.level==''"></span>
-                                <el-tag v-else type="danger" size="small" effect="dark">失败</el-tag>
+                                <el-tag v-if="scope.row.status==0" type="success" size="small" effect="dark">运行正常</el-tag>
+                                <span v-else-if="scope.row.level==''"></span>
+                                <el-tag v-else type="danger" size="small" effect="dark">设备故障</el-tag>
                             </template>
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="notice_way" width="80" label="通知方式">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.notice_way==1">邮件</span>
+                                <span v-if="scope.row.notice_way==2">短信</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="notice_way" label="联系方式">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.notice_way==1">{{ scope.row.email }}</span>
+                                <span v-if="scope.row.notice_way==2">{{ scope.row.mobile }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="remark" label="说明">
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="created_time" label="创建时间" width="200">
                         </el-table-column>
@@ -180,7 +194,7 @@
                 edit(row) {
                     var self = this;
                     $.get("/EarlyWarning/GetEarlyWarning?id=" + row.id,
-                        function(res) {
+                        function (res) {
                             self.earlyWarningForm = res;
                             if (res.notice_way === 1) {
                                 self.isEmailShow = true;
@@ -199,7 +213,7 @@
                         if (valid) {
                             $.post("/EarlyWarning/Submit",
                                 self.earlyWarningForm,
-                                function(res) {
+                                function (res) {
                                     if (res === 1) {
                                         self.resetForm(); // 重置表单
                                         api.showMsg("保存成功...", "success");
@@ -229,7 +243,7 @@
                     };
                     $.get("/EarlyWarning/Load",
                         options,
-                        function(res) {
+                        function (res) {
                             self.tableData = res.data;
                             self.pageIndex = res.pageIndex;
                             self.pageSize = res.pageSize;

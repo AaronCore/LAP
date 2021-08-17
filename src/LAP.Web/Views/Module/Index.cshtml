@@ -73,9 +73,9 @@
     <!--表单-->
     <template>
         <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="40%">
-            <el-form :model="moduleForm" ref="moduleForm" label-position="right" label-width="100px">
+            <el-form :model="moduleForm" ref="moduleForm" :rules="moduleFormRules" label-position="right" label-width="100px">
                 <el-form-item prop="name" label="模块名称:" label-width="130px">
-                    <el-input v-model="moduleForm.name" autocomplete="off"></el-input>
+                    <el-input v-model="moduleForm.name" autocomplete="off" placeholder="请输入模块名称"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -100,6 +100,11 @@
                         id: null,
                         name: null,
                         code: null
+                    },
+                    moduleFormRules: {
+                        name: [
+                            { required: true, message: '请输入模块名称', trigger: 'blur' }
+                        ],
                     },
                     ids: null,
                     tableData: null,

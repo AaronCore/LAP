@@ -43,6 +43,7 @@ namespace LAP.Web.Controllers
                     p.mobile,
                     p.principal,
                     p.status,
+                    p.remark,
                     created_time = p.created_time.ToString("yyyy-MM-dd HH:mm:ss")
                 }).ToList()
             };

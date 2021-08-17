@@ -40,6 +40,10 @@ namespace LAP.EntityFrameworkCore.Entity
         /// </summary>
         public int status { get; set; }
         /// <summary>
+        /// 备注
+        /// </summary>
+        public string remark { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime created_time { get; set; }

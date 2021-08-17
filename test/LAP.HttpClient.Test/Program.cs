@@ -7,6 +7,7 @@ namespace LAP.HttpClient.Test
     {
         static async Task Main(string[] args)
         {
+            // 模拟请求
             await LogSeedData.AddLog();
 
             Console.ForegroundColor = ConsoleColor.White;
