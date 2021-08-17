@@ -11,11 +11,29 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 05/08/2021 17:00:59
+ Date: 17/08/2021 14:13:24
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for early_warning
+-- ----------------------------
+DROP TABLE IF EXISTS `early_warning`;
+CREATE TABLE `early_warning`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
+  `host` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'host地址',
+  `notice_way` int NULL DEFAULT NULL COMMENT '通知方式，1-邮件，2-短信',
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱地址',
+  `mobile` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机号',
+  `principal` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '负责人',
+  `status` int NULL DEFAULT NULL COMMENT '状态',
+  `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `created_time` datetime(0) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '预警管理表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for logs
@@ -36,7 +54,7 @@ CREATE TABLE `logs`  (
   `log_create_time` datetime(0) NOT NULL COMMENT '日志创建时间',
   `created_time` datetime(0) NOT NULL COMMENT '创建实际',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2301 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '错误日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6212 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '错误日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for modules
@@ -65,6 +83,6 @@ CREATE TABLE `statistic_logs`  (
   `request_time` datetime(0) NOT NULL COMMENT '访问时间',
   `created_time` datetime(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 751 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '统计日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6217 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '统计日志表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
