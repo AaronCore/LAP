@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.HttpClient.Test", "LAP.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.HttpClient", "..\client\LAP.HttpClient\LAP.HttpClient.csproj", "{019A4E03-66D9-43DE-9F01-0B20425899BC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http client", "http client", "{CD575F15-3283-4DD7-B9C6-DFF6E101DAC7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http client sdk", "http client sdk", "{CD575F15-3283-4DD7-B9C6-DFF6E101DAC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAP.HttpClientCore", "..\client\LAP.HttpClientCore\LAP.HttpClientCore.csproj", "{60904DD3-EB94-4477-99EB-3A1B11613980}"
 EndProject

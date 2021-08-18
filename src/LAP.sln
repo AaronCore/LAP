@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{78AC8AE7-8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.HttpClient.Test", "..\test\LAP.HttpClient.Test\LAP.HttpClient.Test.csproj", "{0D199554-7B57-4766-8085-C9481835A225}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http client", "http client", "{324D91D0-E9EE-4A76-8D47-7FC84A891354}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http client sdk", "http client sdk", "{324D91D0-E9EE-4A76-8D47-7FC84A891354}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.HttpClient", "..\client\LAP.HttpClient\LAP.HttpClient.csproj", "{019A4E03-66D9-43DE-9F01-0B20425899BC}"
 EndProject
@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAP.Server", "LAP.Server\LA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAP.RabbitMQ", "LAP.RabbitMQ\LAP.RabbitMQ.csproj", "{EBCC7E23-A530-4C0B-B873-E2DB720886F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAP.Test", "LAP.Test\LAP.Test.csproj", "{8B8B4B97-812C-44A4-828F-12B97F84BB3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAP.Test", "LAP.Test\LAP.Test.csproj", "{8B8B4B97-812C-44A4-828F-12B97F84BB3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
