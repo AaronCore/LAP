@@ -33,7 +33,7 @@ namespace LAP.EntityFrameworkCore.Application
             parameters.Add("@pageIndex", pageIndex * pageSize);
             parameters.Add("@pageSize", pageSize);
 
-            var sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules` WHERE 1=1 ";
+            var sql = @"SELECT `id`, `name`, `code`, `is_notice`, `log_level`, `notice_way`, `email`, `mobile`, `created_by`, `created_time` FROM `modules` WHERE 1=1 ";
             if (!string.IsNullOrWhiteSpace(searchKey))
             {
                 sql += " AND name LIKE CONCAT('%',@searchKey,'%')";
@@ -49,12 +49,12 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
-        /// 获取模块列表
+        /// 获取列表
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<ModuleEntity>> GetList()
         {
-            const string sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules`;";
+            const string sql = @"SELECT `id`, `name`, `code`, `is_notice`, `log_level`, `notice_way`, `email`, `mobile`, `created_by`, `created_time` FROM `modules`;";
             return await DapperHelper.QueryAsync<ModuleEntity>(sql);
         }
 
@@ -65,14 +65,24 @@ namespace LAP.EntityFrameworkCore.Application
         /// <returns></returns>
         public async Task<ModuleEntity> Find(int id)
         {
-            const string sql = @"SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules` WHERE id=@id;";
+            const string sql = @"SELECT `id`, `name`, `code`, `is_notice`, `log_level`, `notice_way`, `email`, `mobile`, `created_by`, `created_time` FROM `modules` WHERE id=@id;";
             return await DapperHelper.QueryFirstAsync<ModuleEntity>(sql, new { id });
+        }
+        /// <summary>
+        /// 获取模块
+        /// </summary>
+        /// <param name="code">模块code</param>
+        /// <returns></returns>
+        public async Task<ModuleEntity> Find(string code)
+        {
+            const string sql = @"SELECT `id`, `name`, `code`, `is_notice`, `log_level`, `notice_way`, `email`, `mobile`, `created_by`, `created_time` FROM `modules` WHERE code=@code;";
+            return await DapperHelper.QueryFirstAsync<ModuleEntity>(sql, new { code });
         }
 
         /// <summary>
-        /// 添加Log
+        /// 添加
         /// </summary>
-        /// <param name="model">Module模型</param>
+        /// <param name="model">实体</param>
         /// <returns></returns>
         public async Task<bool> Inster(ModuleEntity model)
         {
@@ -81,14 +91,19 @@ namespace LAP.EntityFrameworkCore.Application
                 using var transaction = conn.BeginTransaction();
                 try
                 {
-                    const string sql = @"INSERT INTO `modules` ( `name`, `code`, `created_by`, `created_time` )
-                                     VALUES (@name, @code, @created_by, @created_time);";
+                    const string sql = @"INSERT INTO `modules` (`name`, `code`, `is_notice`, `log_level`, `notice_way`, `email`, `mobile`, `created_by`, `created_time`)
+                                         VALUES (@name, @code,@is_notice,@log_level,@notice_way,@email,@mobile,@created_by, @created_time);";
 
-                    var code = await conn.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),0)+1+100 AS 'max_id' FROM modules;");
+                    var code = await conn.ExecuteScalarAsync<int>("SELECT IFNULL(MAX(id),0)+1 AS 'max_id' FROM modules;");
                     var param = new
                     {
                         model.name,
                         code,
+                        model.is_notice,
+                        model.log_level,
+                        model.notice_way,
+                        model.email,
+                        model.mobile,
                         model.created_by,
                         created_time = DateTime.Now
                     };
@@ -110,19 +125,28 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
-        /// 修改模块
+        /// 修改
         /// </summary>
-        /// <param name="id">主键id</param>
-        /// <param name="name">模块名称</param>
+        /// <param name="model">实体</param>
         /// <returns></returns>
-        public async Task<bool> Update(int id, string name)
+        public async Task<bool> Update(ModuleEntity model)
         {
-            const string sql = @"UPDATE `modules` SET `name` = @name WHERE `id` = @id;";
-            return await DapperHelper.ExecuteAsync(sql, new { id, name });
+            const string sql = @"UPDATE `modules` SET `name` = @name,`is_notice` =@is_notice, `log_level` =@log_level, `notice_way` =@notice_way, `email` =@email, `mobile` =@mobile WHERE `id` = @id;";
+            var param = new
+            {
+                model.id,
+                model.name,
+                model.is_notice,
+                model.log_level,
+                model.notice_way,
+                model.email,
+                model.mobile,
+            };
+            return await DapperHelper.ExecuteAsync(sql, param);
         }
 
         /// <summary>
-        /// 删除模块
+        /// 删除
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
@@ -133,7 +157,7 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
-        /// 模块名称验证
+        /// 名称验证
         /// </summary>
         /// <param name="id">主键</param>
         /// <param name="name">模块名称</param>

@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using LAP.EntityFrameworkCore.Application;
 using LAP.EntityFrameworkCore.Enum;
 using LAP.Web.Filters;
@@ -31,7 +30,6 @@ namespace LAP.Web.Controllers
         /// <param name="pageSize">分页大小</param>
         /// <param name="searchKey">查询条件</param>
         /// <param name="moduleCode">模块代码</param>
-        /// <param name="logLevel">日志等级</param>
         /// <param name="startDate">开始日期</param>
         /// <param name="endDate">结束日期</param>
         /// <returns></returns>
@@ -66,7 +64,7 @@ namespace LAP.Web.Controllers
         /// <param name="id">主键id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetStatisticLog(int id)
+        public async Task<IActionResult> GetStatisticLog(string id)
         {
             var model = await StatisticLogService.Find(id);
             var obj = new

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading.Tasks;
 using LAP.EntityFrameworkCore.Application;
-using LAP.Server.Common;
+using LAP.Common;
 using Quartz;
 using Quartz.Impl;
 
@@ -14,13 +11,13 @@ namespace LAP.Server
     /// <summary>
     /// 定时任务
     /// </summary>
-    public class JobTool
+    public class QuartzJobManager
     {
         /// <summary>
         /// 任务调度的使用过程
         /// </summary>
         /// <returns></returns>
-        public static async Task Run()
+        public static async Task JobRun()
         {
             // 1.创建scheduler的引用
             ISchedulerFactory schedFact = new StdSchedulerFactory();
@@ -37,7 +34,7 @@ namespace LAP.Server
             // 4.创建 trigger （创建 trigger 触发器）
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("LAP.EarlyWarning.Trigger", "LAP.EarlyWarning.Group")  //触发器 组
-                .WithSimpleSchedule(x => x.WithIntervalInMinutes(5).RepeatForever())
+                .WithSimpleSchedule(x => x.WithIntervalInMinutes(10).RepeatForever())
                 .Build();
 
             // 5.使用trigger规划执行任务job （使用触发器规划执行任务）
@@ -53,7 +50,7 @@ namespace LAP.Server
 
         public async Task Execute(IJobExecutionContext context)
         {
-            Console.WriteLine($"EarlyWarningJob执行工作,在当前时间{DateTime.Now}---上一次执行时间：{DateTime.Now.AddMinutes(-5)}.");
+            Console.WriteLine($"EarlyWarningJob执行工作,在当前时间{DateTime.Now}---上一次执行时间：{DateTime.Now.AddMinutes(-10)}.");
 
             Ping ping = new Ping();
             var list = await EarlyWarningService.GetList();
@@ -76,12 +73,12 @@ namespace LAP.Server
                         if (status != null)
                         {
                             await EarlyWarningService.UpdateStatusAndRemark(item.id, (int)status, status.ToString());
-
+                            var sendText = $"主机：{item.host} 发生故障，请及时处理。";
                             switch (item.notice_way)
                             {
                                 case 1:
                                     // 邮件通知
-                                    await Task.Run(() => { MailHelper.SendMail(item.email, item.host); });
+                                    await MailHelper.SendMail(item.email, sendText, "LAP预警通知");
                                     break;
                                 case 2:
                                     // 短信通知
@@ -94,12 +91,12 @@ namespace LAP.Server
                 {
                     var remark = e.InnerException?.Message;
                     await EarlyWarningService.UpdateStatusAndRemark(item.id, (int)IPStatus.Unknown, remark);
-
+                    var sendText = $"主机：{item.host} 发生故障，请及时处理。";
                     switch (item.notice_way)
                     {
                         case 1:
                             // 邮件通知
-                            await Task.Run(() => { MailHelper.SendMail(item.email, item.host); });
+                            await MailHelper.SendMail(item.email, sendText, "LAP预警通知");
                             break;
                         case 2:
                             // 短信通知

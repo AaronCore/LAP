@@ -69,7 +69,7 @@ namespace LAP.Web.Controllers
         /// <param name="id">主键id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetLog(int id)
+        public async Task<IActionResult> GetLog(string id)
         {
             var model = await LogService.Find(id);
             var obj = new

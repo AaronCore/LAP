@@ -10,7 +10,7 @@ namespace LAP.EntityFrameworkCore.Entity
         /// <summary>
         /// 主键id
         /// </summary>
-        public int id { get; set; }
+        public string id { get; set; }
         /// <summary>
         /// 模块代码
         /// </summary>

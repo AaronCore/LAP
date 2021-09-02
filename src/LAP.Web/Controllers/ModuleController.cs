@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using LAP.EntityFrameworkCore.Application;
 using LAP.EntityFrameworkCore.Entity;
-using LAP.EntityFrameworkCore.ViewModel;
 using LAP.Web.Filters;
 
 namespace LAP.Web.Controllers
@@ -41,6 +40,11 @@ namespace LAP.Web.Controllers
                     p.id,
                     p.name,
                     p.code,
+                    p.is_notice,
+                    p.log_level,
+                    p.notice_way,
+                    p.email,
+                    p.mobile,
                     created_time = p.created_time.ToString("yyyy-MM-dd HH:mm:ss")
                 }).ToList()
             };
@@ -62,7 +66,7 @@ namespace LAP.Web.Controllers
 
             if (model.id > 0)
             {
-                if (!await ModuleService.Update(model.id, model.name))
+                if (!await ModuleService.Update(model))
                 {
                     return Json(0);
                 }
@@ -103,7 +107,23 @@ namespace LAP.Web.Controllers
         public async Task<IActionResult> GetModule(int id)
         {
             var model = await ModuleService.Find(id);
-            return Json(model);
+            var logLevel = new List<int>();
+            if (!string.IsNullOrWhiteSpace(model.log_level))
+            {
+                logLevel.AddRange(model.log_level.Split(',').Select(item => Convert.ToInt32(item)));
+            }
+            var obj = new
+            {
+                model.id,
+                model.name,
+                model.code,
+                model.is_notice,
+                log_level = logLevel,
+                model.notice_way,
+                model.email,
+                model.mobile
+            };
+            return Json(obj);
         }
 
         /// <summary>

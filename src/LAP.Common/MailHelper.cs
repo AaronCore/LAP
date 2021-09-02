@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace LAP.Server.Common
+namespace LAP.Common
 {
     public class MailHelper
     {
@@ -11,13 +12,17 @@ namespace LAP.Server.Common
         /// 发送邮件
         /// </summary>
         /// <param name="email">邮箱地址</param>
-        /// <param name="host">主机地址</param>
-        public static void SendMail(string email, string host)
+        /// <param name="sendText">邮件文本内容</param>
+        /// <param name="mailSubject">邮件主题</param>
+        public static async Task SendMail(string email, string sendText, string mailSubject)
         {
-            var receiverAccountList = email.Split(',').Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
-            var sendText = $"主机：{host} 发生故障，请及时处理。";
-            SendMail("LAP日志分析系统", "aaroncnc@qq.com", "smtp.qq.com", 25, "客户端授权码", receiverAccountList, "LAP预警通知", null, sendText, null);
+            await Task.Run(() =>
+            {
+                var receiverAccountList = email.Split(',').Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
+                SendMail("LAP日志分析系统", "aaroncnc@qq.com", "smtp.qq.com", 25, "客户端授权码", receiverAccountList, mailSubject, null, sendText, null);
+            });
         }
+
         /// <summary>
         /// 邮件发送
         /// </summary>

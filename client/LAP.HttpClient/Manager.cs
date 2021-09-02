@@ -8,7 +8,7 @@ namespace LAP.HttpClient
         /// <summary>
         /// 添加日志
         /// </summary>
-        /// <param name="contentJson">添加日志输入实体对象Json</param>
+        /// <param name="contentJson">添加日志实体(AddLogModel)对象Json</param>
         /// <returns></returns>
         public static async Task Log(string contentJson)
         {
@@ -25,7 +25,7 @@ namespace LAP.HttpClient
         /// <summary>
         /// 添加统计日志
         /// </summary>
-        /// <param name="contentJson">添加统计日志对象对象Json</param>
+        /// <param name="contentJson">添加统计日志实体(AddStatisticLogModel)对象Json</param>
         /// <returns></returns>
         public static async Task StatisticLog(string contentJson)
         {

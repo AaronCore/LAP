@@ -2,7 +2,6 @@
 
 namespace LAP.EntityFrameworkCore.ViewModel
 {
-
     public class LogChartDto
     {
         public string[] module { get; set; }

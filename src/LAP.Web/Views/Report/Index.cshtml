@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "报表查询";
+}
+
+@section Css {
+    <style>
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+    </style>
+}
+
+<div id="reportApp">
+    <el-container>
+        <el-aside style="width: 350px; height: 850px;border: 1px solid #eee;">
+            <el-tree :data="treeData" default-expand-all :props="treeProps" v-on:node-click="nodeClick"></el-tree>
+        </el-aside>
+        <el-main style="border: 1px solid #eee; height: 850px;">
+            <template>
+                <el-header>
+                    <el-row>
+                        <el-col>
+                            <el-input type="textarea" :rows="8" v-model="queryText"></el-input>
+                        </el-col>
+                    </el-row>
+                    <br />
+                    <el-row>
+                        <el-col>
+                            <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-search">查询</el-button>
+                            <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-refresh-left">重置</el-button>
+                            <el-button type="success" size="medium" v-on:click="exportExecl" icon="el-icon-download">结果导出</el-button>
+                            @*<el-button type="primary" size="medium" plain>XXX报表1</el-button>*@
+                        </el-col>
+                    </el-row>
+                </el-header>
+                <el-main>
+                    <template>
+                        <div class="el-table el-table--border" style="width: 100%; height: 540px; overflow-x: scroll; overflow-y: scroll; ">
+                            <table style="width: 1300px; height: 540px;" v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+                                <thead>
+                                    <tr>
+                                        <th v-for="col in columns" :key="col" style="width: 500px;">
+                                            <div class="cell">{{ col }}</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="row in rows">
+                                        <td v-for="v in row">
+                                            <div class="cell">{{ v }}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                </el-main>
+            </template>
+        </el-main>
+    </el-container>
+</div>
+
+@section Scripts {
+    <script>
+        new Vue({
+            el: "#reportApp",
+            data() {
+                return {
+                    queryText: null,
+                    treeData: [],
+                    treeProps: {
+                        label: 'name',
+                        children: 'children'
+                    },
+                    columns: [],
+                    rows: [],
+                    loading: false,
+                }
+            },
+            methods: {
+                nodeClick(e) {
+                    //console.log(e);
+                },
+                // 重置
+                reset() {
+                    this.queryText = null;
+                    this.rows = null;
+                    this.columns = null;
+                    this.loading = false;
+                },
+                search() {
+                    var self = this;
+                    self.loading = true;
+                    $.post("/Report/Query", { queryText: self.queryText }, function (res) {
+                        self.loading = false;
+                        if (res.code === 1) {
+                            self.columns = res.data.columns;
+                            self.rows = res.data.rows;
+                        }
+                        if (res.code === 0) {
+                            api.showMsg(res.message, "error");
+                        }
+                        if (res.code === -1) {
+                            api.showMsg("查询SQL存在危险关键词", "warning");
+                        }
+                    });
+                },
+                exportExecl() {
+                    var self = this;
+                    $.post("/Report/Export", { queryText: self.queryText }, function (res) {
+                        if (res.code === 1) {
+                            location.href = location.origin + "/execl/" + res.data;
+                        }
+                        if (res.code === 0) {
+                            api.showMsg(res.message, "error");
+                        }
+                        if (res.code === -1) {
+                            api.showMsg("查询SQL存在危险关键词", "warning");
+                        }
+                    });
+                },
+                getTableTreeData() {
+                    var self = this;
+                    $.get("/Report/TableData", function (res) {
+                        self.treeData = res;
+                    });
+                },
+            },
+            created() {
+                this.getTableTreeData();
+            }
+        });
+    </script>
+}
+

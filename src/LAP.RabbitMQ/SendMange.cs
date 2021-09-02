@@ -41,15 +41,15 @@ namespace LAP.RabbitMQ
             switch (message.SendEnum)
             {
                 case SendEnum.推送模式:
-                    ex = bus.Advanced.ExchangeDeclare(message.ExchangeName, ExchangeType.Direct);
+                    ex = await bus.Advanced.ExchangeDeclareAsync(message.ExchangeName, ExchangeType.Direct);
                     break;
                 case SendEnum.订阅模式:
                     //广播订阅模式
-                    ex = bus.Advanced.ExchangeDeclare(message.ExchangeName, ExchangeType.Fanout);
+                    ex = await bus.Advanced.ExchangeDeclareAsync(message.ExchangeName, ExchangeType.Fanout);
                     break;
                 case SendEnum.主题路由模式:
                     //主题路由模式
-                    ex = bus.Advanced.ExchangeDeclare(message.ExchangeName, ExchangeType.Topic);
+                    ex = await bus.Advanced.ExchangeDeclareAsync(message.ExchangeName, ExchangeType.Topic);
                     break;
             }
 

@@ -46,9 +46,15 @@
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="code" label="模块代码">
                         </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="is_notice" label="是否提醒通知">
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.is_notice" type="success" size="small" effect="dark">是</el-tag>
+                                <el-tag v-else type="danger" size="small" effect="dark">否</el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column header-align="center" align="center" prop="created_time" label="创建时间" width="200">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" label="操作" width="200">
+                        <el-table-column header-align="center" align="center" label="操作" width="80">
                             <template slot-scope="scope">
                                 <el-button :class="scope.row.name === 'LAP' ? 'btn-none' : 'btn-block'" v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
                             </template>
@@ -72,11 +78,34 @@
     </template>
     <!--表单-->
     <template>
-        <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="40%">
-            <el-form :model="moduleForm" ref="moduleForm" :rules="moduleFormRules" label-position="right" label-width="100px">
-                <el-form-item prop="name" label="模块名称:" label-width="130px">
-                    <el-input v-model="moduleForm.name" autocomplete="off" placeholder="请输入模块名称"></el-input>
+        <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="50%">
+            <el-form :inline="true" :model="moduleForm" ref="moduleForm" :rules="moduleFormRules" label-position="right" label-width="100px">
+                <el-form-item prop="name" label="模块名称">
+                    <el-input v-model="moduleForm.name" autocomplete="off" placeholder="请输入模块名称" style="width: 350px;"></el-input>
                 </el-form-item>
+                <el-form-item prop="is_notice" label="提醒通知">
+                    <el-switch v-model="moduleForm.is_notice" active-color="#13ce66" v-on:change="noticeChange"></el-switch>
+                </el-form-item>
+                <div v-if="isNotice">
+                    <el-form-item prop="log_level" label="日志类型">
+                        <el-select style="width: 350px;" v-model="moduleForm.log_level" filterable clearable multiple placeholder="日志类型">
+                            <el-option v-for="item in logLevels" :key="item.value" :label="item.text" :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="notice_way" label="通知方式">
+                        <el-radio-group v-model="moduleForm.notice_way" v-on:change="noticeWayChange">
+                            <el-radio :label="1">邮件</el-radio>
+                            <el-radio :label="2">短信</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item v-if="isEmailShow" prop="email" label="邮箱">
+                        <el-input v-model="moduleForm.email" autocomplete="off" placeholder="请输入邮箱,多个以,号拼接" style="width: 520px;"></el-input>
+                    </el-form-item>
+                    <el-form-item v-if="isMobileShow" prop="mobile" label="手机">
+                        <el-input v-model="moduleForm.mobile" autocomplete="off" placeholder="请输入手机号,多个以,号拼接" style="width: 520px;"></el-input>
+                    </el-form-item>
+                </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button type="warning" v-on:click="resetForm()">重 置</el-button>
@@ -99,13 +128,22 @@
                     moduleForm: {
                         id: null,
                         name: null,
-                        code: null
+                        code: null,
+                        is_notice: null,
+                        log_level: null,
+                        notice_way: null,
+                        email: null,
+                        mobile: null,
                     },
                     moduleFormRules: {
                         name: [
                             { required: true, message: '请输入模块名称', trigger: 'blur' }
                         ],
                     },
+                    isEmailShow: false,
+                    isMobileShow: false,
+                    isNotice: false,
+                    logLevels: [],
                     ids: null,
                     tableData: null,
                     // 分页
@@ -116,6 +154,28 @@
                 }
             },
             methods: {
+                getLogLevel() {
+                    var self = this;
+                    $.get("/Logger/GetLogLevelList", function (res) {
+                        self.logLevels = res;
+                    });
+                },
+                noticeChange(v) {
+                    if (v) {
+                        this.isNotice = true;
+                    } else {
+                        this.isNotice = false;
+                    }
+                },
+                noticeWayChange(v) {
+                    if (v === 1) {
+                        this.isEmailShow = true;
+                        this.isMobileShow = false;
+                    } else {
+                        this.isEmailShow = false;
+                        this.isMobileShow = true;
+                    }
+                },
                 // 查询
                 search() {
                     this.pageReset();
@@ -143,35 +203,45 @@
                 // 编辑
                 edit(row) {
                     var self = this;
-                    $.get("/Module/GetModule?id=" + row.id,
-                        function (res) {
-                            self.moduleForm = res;
-                            self.dialogFormVisible = true;
-                        });
+                    $.get("/Module/GetModule?id=" + row.id, function (res) {
+                        self.moduleForm = res;
+                        if (res.notice_way === 1) {
+                            self.isEmailShow = true;
+                            self.isMobileShow = false;
+                        } else {
+                            self.isEmailShow = false;
+                            self.isMobileShow = true;
+                        }
+                        if (res.is_notice) {
+                            self.isNotice = true;
+                        } else {
+                            self.isNotice = false;
+                        }
+                        self.dialogFormVisible = true;
+                    });
                 },
                 // 提交
                 submitForm(formName) {
                     var self = this;
+                    self.moduleForm.log_level = self.moduleForm.log_level != null ? self.moduleForm.log_level.join(',') : null;
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            $.post("/Module/Submit",
-                                self.moduleForm,
-                                function (res) {
-                                    if (res === 1) {
-                                        self.resetForm(); // 重置表单
-                                        api.showMsg("保存成功...", "success");
-                                        self.dialogFormVisible = false; // 关闭窗口
-                                        self.getTableData(); // 重新查询
-                                    } else if (res === -1) {
-                                        api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
-                                        return false;
-                                    } else {
-                                        api.showMsg("保存失败...", "error");
-                                        return false;
-                                    }
-                                });
+                            $.post("/Module/Submit", self.moduleForm, function (res) {
+                                if (res === 1) {
+                                    self.resetForm(); // 重置表单
+                                    api.showMsg("保存成功...", "success");
+                                    self.dialogFormVisible = false; // 关闭窗口
+                                    self.getTableData(); // 重新查询
+                                } else if (res === -1) {
+                                    api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
+                                    return false;
+                                } else {
+                                    api.showMsg("保存失败...", "error");
+                                    return false;
+                                }
+                            });
                         } else {
-                            api.showMsg("error submit...", "error");
+                            //api.showMsg("error submit...", "error");
                             return false;
                         }
                     });
@@ -196,7 +266,7 @@
                     var form = this.moduleForm;
                     Object.keys(form).forEach(key => (form[key] = null));
                 },
-                checkSelect(row, index) {
+                checkSelect(row) {
                     return row.name === "LAP" ? false : true;
                 },
                 // 获取选中行
@@ -227,6 +297,7 @@
             },
             created() {
                 this.getTableData();
+                this.getLogLevel();
             }
         });
     </script>

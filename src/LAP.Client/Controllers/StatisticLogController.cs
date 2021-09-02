@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using LAP.EntityFrameworkCore.Application;
+using LAP.EntityFrameworkCore.ViewModel;
+using LAP.EntityFrameworkCore.Enum;
 using LAP.Client.Extensions;
 using LAP.Common;
-using LAP.EntityFrameworkCore.Application;
-using LAP.EntityFrameworkCore.Enum;
-using LAP.EntityFrameworkCore.ViewModel;
 
 namespace LAP.Client.Controllers
 {
@@ -38,7 +35,7 @@ namespace LAP.Client.Controllers
             catch (Exception)
             {
                 // 故障转移
-                await SendMessage.Send(MqMessageType.请求日志, dto.ToJson());
+                await RabbitMQMessage.Send(RabbitMQMessageType.请求日志, dto.ToJson());
             }
 
             return Ok();

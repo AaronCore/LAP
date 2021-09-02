@@ -25,19 +25,19 @@ namespace LAP.Common
     public static class TimeOut
     {
         /// <summary>
-        /// 超时时间-1秒
+        /// 超时时间,1秒
         /// </summary>
         public const int TimeOutSecond = 1;
         /// <summary>
-        /// 超时时间-1分钟
+        /// 超时时间,1分钟
         /// </summary>
         public const int TimeOutMinute = TimeOutSecond * 60;
         /// <summary>
-        /// 超时时间-1小时
+        /// 超时时间,1小时
         /// </summary>
         public const int TimeOutHour = TimeOutMinute * 60;
         /// <summary>
-        /// 超时时间-1天
+        /// 超时时间,1天
         /// </summary>
         public const int TimeOutDay = TimeOutHour * 24;
     }

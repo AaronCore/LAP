@@ -144,7 +144,6 @@
                 isAutoChange(v) {
                     var self = this;
                     var ss = self.searchForm.num * 1000;
-                    console.log(ss);
                     if (v) {
                         this.timer = setInterval(() => {
                             self.getLogChart();
@@ -157,10 +156,9 @@
                 },
                 getStatistics() {
                     var self = this;
-                    $.get("/Dashboard/GetStatistics",
-                        function (res) {
-                            self.statisticForm = res;
-                        });
+                    $.get("/Dashboard/GetStatistics", function (res) {
+                        self.statisticForm = res;
+                    });
                 },
                 getLogChart() {
                     var startDate = this.searchForm.startAndEndDate != null ? this.searchForm.startAndEndDate[0] : "";

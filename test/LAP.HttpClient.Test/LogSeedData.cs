@@ -19,9 +19,9 @@ namespace LAP.HttpClient.Test
         /// <returns></returns>
         public static async Task AddLog()
         {
-            for (int i = 1; i <= 1000; i++)
+            for (int i = 1; i <= 2000; i++)
             {
-                Thread.Sleep(2000);
+                Thread.Sleep(1500);
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine($"{DateTime.Now}  第{i}次执行...");
@@ -60,7 +60,7 @@ namespace LAP.HttpClient.Test
             }
         }
 
-        private static readonly int[] MoudleCode = { 101, 102, 103, 104, 105, 106, 107, 108, 109 };
+        private static readonly int[] MoudleCode = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         private static Log CreateLogData()
         {
             var log = new Faker<Log>()

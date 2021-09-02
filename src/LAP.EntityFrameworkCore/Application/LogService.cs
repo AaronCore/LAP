@@ -15,16 +15,17 @@ namespace LAP.EntityFrameworkCore.Application
         private static readonly DapperHelper DapperHelper = new();
 
         /// <summary>
-        /// 添加Log
+        /// 添加
         /// </summary>
         /// <param name="input">Log模型</param>
         /// <returns></returns>
         public async Task<bool> Inster(LogInputDto input)
         {
-            const string sql = @"INSERT INTO `logs` (`module_code`, `level`, `request_path`, `request_url`, `request_form`, `method`, `exception`, `message`, `ip_address`, `remark`, `log_create_time`, `created_time` )
-                                 VALUES (@module_code, @level, @request_path, @request_url, @request_form , @method, @exception, @message, @ip_address, @remark , @log_create_time, @created_time);";
+            const string sql = @"INSERT INTO `logs` (`id`,`module_code`, `level`, `request_path`, `request_url`, `request_form`, `method`, `exception`, `message`, `ip_address`, `remark`, `log_create_time`, `created_time` )
+                                 VALUES (@id,@module_code, @level, @request_path, @request_url, @request_form , @method, @exception, @message, @ip_address, @remark , @log_create_time, @created_time);";
             var param = new
             {
+                id = Tools.NewGuid,
                 input.module_code,
                 input.level,
                 input.request_path,
@@ -42,11 +43,11 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
-        /// 获取Log
+        /// 获取
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
-        public async Task<LogDto> Find(int id)
+        public async Task<LogDto> Find(string id)
         {
             const string sql = @"SELECT t1.id, t1.module_code, t2.`name` AS 'module_name', t1.`level`,t1.request_path, t1.request_url, t1.request_form, t1.method, t1.exception, 
                                         t1.message, t1.ip_address, t1.remark, t1.log_create_time, t1.created_time FROM `logs` AS t1, modules AS t2 

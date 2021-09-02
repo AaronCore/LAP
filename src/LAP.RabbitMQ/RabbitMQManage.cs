@@ -9,13 +9,12 @@ namespace LAP.RabbitMQ
 {
     public class RabbitMQManage
     {
-        private volatile static IBus _bus;
+        private static volatile IBus _bus;
         private static readonly object LockMq = new();
 
         /// <summary>
         /// 创建服务总线
         /// </summary>
-        /// <param name="config"></param>
         /// <returns></returns>
         public static IBus CreateEventBus()
         {
@@ -41,7 +40,7 @@ namespace LAP.RabbitMQ
         /// <summary>
         ///  消息同步投递
         /// </summary>
-        /// <param name="listMsg"></param>
+        /// <param name="message"></param>
         /// <returns></returns>
         public static bool PublishMessage(PublishMessage message)
         {
@@ -65,7 +64,7 @@ namespace LAP.RabbitMQ
         /// <summary>
         /// 消息异步投递
         /// </summary>
-        /// <param name="listMsg"></param>
+        /// <param name="message"></param>
         public static async Task PublishMessageAsync(PublishMessage message)
         {
             try
@@ -86,6 +85,8 @@ namespace LAP.RabbitMQ
         /// <summary>
         /// 消息订阅
         /// </summary>
+        /// <typeparam name="TConsum"></typeparam>
+        /// <param name="args"></param>
         public static void Subscribe<TConsum>(MessageArgs args) where TConsum : IMessageConsume, new()
         {
             if (_bus == null)

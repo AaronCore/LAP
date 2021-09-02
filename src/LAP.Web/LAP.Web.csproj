@@ -5,7 +5,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\execl\**" />
+	  <Content Remove="wwwroot\execl\**" />
+	  <EmbeddedResource Remove="wwwroot\execl\**" />
+	  <None Remove="wwwroot\execl\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+		<PackageReference Include="WeihanLi.Npoi" Version="1.20.0" />
 	</ItemGroup>
 
 	<ItemGroup>

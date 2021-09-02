@@ -115,6 +115,13 @@ new Vue({
                     url: '/EarlyWarning/Index',
                     icon: 'el-icon-message-solid',
                 },
+                {
+                    key: 'reportManage',
+                    title: '报表查询',
+                    show: true,
+                    url: '/Report/Index',
+                    icon: 'el-icon-s-marketing',
+                },
             ],
             tabItems: [homeTab],
             tabActive: homeTab.key,

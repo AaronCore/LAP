@@ -15,11 +15,11 @@ namespace LAP.EntityFrameworkCore.Application
         private static readonly DapperHelper DapperHelper = new();
 
         /// <summary>
-        /// 获取Log
+        /// 获取
         /// </summary>
         /// <param name="id">主键id</param>
         /// <returns></returns>
-        public async Task<StatisticLogDto> Find(int id)
+        public async Task<StatisticLogDto> Find(string id)
         {
             const string sql = @"SELECT t1.id, t1.module_code, t2.`name` AS 'module_name', t1.request_page, t1.action , t1.request_url, t1.message, t1.request_time, 
                                         t1.created_time FROM statistic_logs t1, modules t2 
@@ -80,16 +80,17 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
-        /// 添加StatisticLog
+        /// 添加
         /// </summary>
-        /// <param name="input">Log模型</param>
+        /// <param name="input">输入实体</param>
         /// <returns></returns>
         public async Task<bool> Inster(StatisticLogInputDto input)
         {
-            const string sql = @"INSERT INTO `statistic_logs` (`module_code`, `request_page`, `action`, `request_url`, `message`, `request_time`, `created_time` )
-                                 VALUES (@module_code, @request_page, @action, @request_url, @message, @request_time, @created_time);";
+            const string sql = @"INSERT INTO `statistic_logs` (`id`,`module_code`, `request_page`, `action`, `request_url`, `message`, `request_time`, `created_time` )
+                                 VALUES (@id,@module_code, @request_page, @action, @request_url, @message, @request_time, @created_time);";
             var param = new
             {
+                id = Tools.NewGuid,
                 input.module_code,
                 input.request_page,
                 input.action,

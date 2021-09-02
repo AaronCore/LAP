@@ -66,9 +66,9 @@ namespace LAP.EntityFrameworkCore.Application
         }
 
         /// <summary>
-        /// 添加Log
+        /// 添加
         /// </summary>
-        /// <param name="model">Module模型</param>
+        /// <param name="model">实体</param>
         /// <returns></returns>
         public async Task<bool> Inster(EarlyWarningEntity model)
         {

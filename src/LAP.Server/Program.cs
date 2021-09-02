@@ -12,9 +12,9 @@ namespace LAP.Server
             try
             {
                 // 消息队列
-                MessageTool.Subscribe();
+                await RabbitMQMessage.Subscribe();
                 // 定时任务
-                await JobTool.Run();
+                await QuartzJobManager.JobRun();
             }
             catch (Exception e)
             {

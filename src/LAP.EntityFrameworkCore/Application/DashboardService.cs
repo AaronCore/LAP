@@ -29,7 +29,8 @@ namespace LAP.EntityFrameworkCore.Application
                     var logNum = await conn.ExecuteScalarAsync<int>("SELECT COUNT(id) AS 'rows' FROM `logs`;");
                     dic.Add("logNum", logNum);
 
-                    dic.Add("monitorNum", 0);
+                    var monitorNum = await conn.ExecuteScalarAsync<int>("SELECT COUNT(id) AS 'rows' FROM `early_warning`;");
+                    dic.Add("monitorNum", monitorNum);
 
                     var moduleNum = await conn.ExecuteScalarAsync<int>("SELECT COUNT(id) AS 'rows' FROM `modules`;");
                     dic.Add("moduleNum", moduleNum);
@@ -135,7 +136,7 @@ namespace LAP.EntityFrameworkCore.Application
                     var moduleList = await conn.QueryAsync<ModuleEntity>("SELECT `id`, `name`, `code`, `created_by`, `created_time` FROM `modules`;");
                     chartDto.module = moduleList.Select(p => p.name).ToArray();
 
-                    var serieTag = new[] { 101, 102, 103 };
+                    var serieTag = new[] { 1, 2, 3 };
 
                     var seriesData = new List<StatisticLogChartDataDto>();
                     var data = new List<StatisticLogChartDataDto>();

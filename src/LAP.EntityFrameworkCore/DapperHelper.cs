@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Data.Common;
 using MySql.Data.MySqlClient;
 using Dapper;
 using LAP.Common;
@@ -12,7 +13,7 @@ namespace LAP.EntityFrameworkCore
     /// </summary>
     public class DapperHelper
     {
-        private static readonly ConfigHelper ConfigHelper = new ConfigHelper();
+        private static readonly ConfigHelper ConfigHelper = new();
         private static readonly string ConnectionString = ConfigHelper.GetValue<string>("MySQLConnection");
 
         public IDbConnection Connection()
@@ -77,6 +78,16 @@ namespace LAP.EntityFrameworkCore
             using (var conn = Connection())
             {
                 return await conn.QueryAsync<T>(sql, param);
+            }
+        }
+        public virtual async Task<DataTable> QueryAsync(string sql, object param = null)
+        {
+            using (var conn = Connection())
+            {
+                var dt = new DataTable("DT2021");
+                var reader = await conn.ExecuteReaderAsync(sql);
+                dt.Load(reader);
+                return dt;
             }
         }
 

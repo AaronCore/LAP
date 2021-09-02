@@ -81,30 +81,29 @@
     </template>
     <!--表单-->
     <template>
-        <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="40%">
-            <el-form :model="earlyWarningForm" ref="earlyWarningForm" :rules="earlyWarningFormRules" label-position="right" label-width="100px">
-                <el-form-item prop="name" label="管理名称:" label-width="130px">
-                    <el-input v-model="earlyWarningForm.name" autocomplete="off" placeholder="请输入管理名称"></el-input>
+        <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="50%">
+            <el-form :inline="true" :model="earlyWarningForm" ref="earlyWarningForm" :rules="earlyWarningFormRules" label-position="right" label-width="100px">
+                <el-form-item prop="name" label="管理名称">
+                    <el-input v-model="earlyWarningForm.name" autocomplete="off" placeholder="请输入管理名称" style="width: 200px;"></el-input>
                 </el-form-item>
-                <el-form-item prop="host" label="主机地址:" label-width="130px">
-                    <el-input v-model="earlyWarningForm.host" autocomplete="off" placeholder="请输入主机地址"></el-input>
+                <el-form-item prop="host" label="主机地址">
+                    <el-input v-model="earlyWarningForm.host" autocomplete="off" placeholder="请输入主机地址" style="width: 200px;"></el-input>
                 </el-form-item>
-                <el-form-item prop="principal" label="管理人:" label-width="130px">
-                    <el-input v-model="earlyWarningForm.principal" autocomplete="off" placeholder="请输入管理人"></el-input>
+                <el-form-item prop="principal" label="管理人">
+                    <el-input v-model="earlyWarningForm.principal" autocomplete="off" placeholder="请输入管理人" style="width: 200px;"></el-input>
                 </el-form-item>
-                <el-form-item prop="notice_way" label="通知方式:" label-width="130px">
-                    <el-select v-model="earlyWarningForm.notice_way" v-on:change="noticeWayChange" placeholder="请选择通知方式">
-                        <el-option v-for="item in noticeWays" :key="item.value" :label="item.text" :value="item.value">
-                        </el-option>
-                    </el-select>
+                <el-form-item prop="notice_way" label="通知方式">
+                    <el-radio-group v-model="earlyWarningForm.notice_way" v-on:change="noticeWayChange">
+                        <el-radio :label="1">邮件</el-radio>
+                        <el-radio :label="2">短信</el-radio>
+                    </el-radio-group>
                 </el-form-item>
-                <el-form-item v-if="isEmailShow" prop="email" label="邮箱:" label-width="130px">
-                    <el-input v-model="earlyWarningForm.email" autocomplete="off" placeholder="请输入邮箱,多个以,号拼接"></el-input>
+                <el-form-item v-if="isEmailShow" prop="email" label="邮箱">
+                    <el-input v-model="earlyWarningForm.email" autocomplete="off" placeholder="请输入邮箱,多个以,号拼接" style="width: 520px;"></el-input>
                 </el-form-item>
-                <el-form-item v-if="isMobileShow" prop="mobile" label="手机:" label-width="130px">
-                    <el-input v-model="earlyWarningForm.mobile" autocomplete="off" placeholder="请输入手机号,多个以,号拼接"></el-input>
+                <el-form-item v-if="isMobileShow" prop="mobile" label="手机">
+                    <el-input v-model="earlyWarningForm.mobile" autocomplete="off" placeholder="请输入手机号,多个以,号拼接" style="width: 520px;"></el-input>
                 </el-form-item>
-
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button type="warning" v-on:click="resetForm()">重 置</el-button>
@@ -143,10 +142,6 @@
                     },
                     isEmailShow: false,
                     isMobileShow: false,
-                    noticeWays: [
-                        { text: '邮件', value: 1 },
-                        { text: '短信', value: 2 },
-                    ],
                     ids: null,
                     tableData: null,
                     // 分页
@@ -158,7 +153,7 @@
             },
             methods: {
                 noticeWayChange(v) {
-                    if (v == 1) {
+                    if (v === 1) {
                         this.isEmailShow = true;
                         this.isMobileShow = false;
                     } else {
@@ -193,40 +188,37 @@
                 // 编辑
                 edit(row) {
                     var self = this;
-                    $.get("/EarlyWarning/GetEarlyWarning?id=" + row.id,
-                        function (res) {
-                            self.earlyWarningForm = res;
-                            if (res.notice_way === 1) {
-                                self.isEmailShow = true;
-                                self.isMobileShow = false;
-                            } else {
-                                self.isEmailShow = false;
-                                self.isMobileShow = true;
-                            }
-                            self.dialogFormVisible = true;
-                        });
+                    $.get("/EarlyWarning/GetEarlyWarning?id=" + row.id, function (res) {
+                        self.earlyWarningForm = res;
+                        if (res.notice_way === 1) {
+                            self.isEmailShow = true;
+                            self.isMobileShow = false;
+                        } else {
+                            self.isEmailShow = false;
+                            self.isMobileShow = true;
+                        }
+                        self.dialogFormVisible = true;
+                    });
                 },
                 // 提交
                 submitForm(formName) {
                     var self = this;
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            $.post("/EarlyWarning/Submit",
-                                self.earlyWarningForm,
-                                function (res) {
-                                    if (res === 1) {
-                                        self.resetForm(); // 重置表单
-                                        api.showMsg("保存成功...", "success");
-                                        self.dialogFormVisible = false; // 关闭窗口
-                                        self.getTableData(); // 重新查询
-                                    } else if (res === -1) {
-                                        //api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
-                                        return false;
-                                    } else {
-                                        api.showMsg("保存失败...", "error");
-                                        return false;
-                                    }
-                                });
+                            $.post("/EarlyWarning/Submit", self.earlyWarningForm, function (res) {
+                                if (res === 1) {
+                                    self.resetForm(); // 重置表单
+                                    api.showMsg("保存成功...", "success");
+                                    self.dialogFormVisible = false; // 关闭窗口
+                                    self.getTableData(); // 重新查询
+                                } else if (res === -1) {
+                                    //api.showMsg("模块名称:" + self.moduleForm.name + "重复!", "error");
+                                    return false;
+                                } else {
+                                    api.showMsg("保存失败...", "error");
+                                    return false;
+                                }
+                            });
                         } else {
                             //api.showMsg("error submit...", "error");
                             return false;
@@ -241,14 +233,12 @@
                         pageSize: self.pageSize,
                         searchKey: self.searchForm.searchValue
                     };
-                    $.get("/EarlyWarning/Load",
-                        options,
-                        function (res) {
-                            self.tableData = res.data;
-                            self.pageIndex = res.pageIndex;
-                            self.pageSize = res.pageSize;
-                            self.total = res.total;
-                        });
+                    $.get("/EarlyWarning/Load", options, function (res) {
+                        self.tableData = res.data;
+                        self.pageIndex = res.pageIndex;
+                        self.pageSize = res.pageSize;
+                        self.total = res.total;
+                    });
                 },
                 // 表单重置
                 resetForm() {

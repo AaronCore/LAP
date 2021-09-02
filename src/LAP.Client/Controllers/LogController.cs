@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using LAP.Client.Extensions;
-using LAP.Common;
+using Microsoft.AspNetCore.Mvc;
 using LAP.EntityFrameworkCore.Application;
-using LAP.EntityFrameworkCore.Enum;
 using LAP.EntityFrameworkCore.ViewModel;
+using LAP.EntityFrameworkCore.Enum;
+using LAP.Client.Extensions;
+using LAP.Client.Filters;
+using LAP.Common;
 
 namespace LAP.Client.Controllers
 {
-    [ApiController]
     [Route("api/log")]
+    [ApiController]
     public class LogController : ControllerBase
     {
         private static readonly LogService LogService = new();
@@ -24,6 +22,7 @@ namespace LAP.Client.Controllers
         /// <param name="dto">日志输入模型</param>
         /// <returns></returns>
         [HttpPost("addlog")]
+        [ActionFilter]
         public async Task<IActionResult> AddLog([FromBody] LogInputDto dto)
         {
             if (dto == null)
@@ -38,7 +37,7 @@ namespace LAP.Client.Controllers
             catch (Exception)
             {
                 // 故障转移
-                await SendMessage.Send(MqMessageType.日志, dto.ToJson());
+                await RabbitMQMessage.Send(RabbitMQMessageType.日志, dto.ToJson());
             }
 
             return Ok();
